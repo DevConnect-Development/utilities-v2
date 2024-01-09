@@ -27,28 +27,26 @@ export default class extends InteractionHandler {
     }
 
     async run(interaction: StringSelectMenuInteraction) {
+        // Defer Reply
+        const deferredReply = await interaction.deferReply({
+            ephemeral: true,
+        });
 
         // Variables
-        const chosenUser = interaction.values[0]
+        const chosenUser = interaction.values[0];
+
+        // Reset Components
+        interaction.message.edit({
+            components: interaction.message.components,
+        });
 
         // UserID Exist Check
-        if(!chosenUser) {
-            await interaction.message.edit({
-                components: interaction.message.components
-            })
-            return await interaction.reply({
-                ephemeral: true,
-                content: "Couldn't find requested User ID."
-            })
+        if (!chosenUser) {
+            return await interaction.editReply(
+                "Couldn't find requested User ID."
+            );
         }
-
         // Return with UserID
-        await interaction.message.edit({
-            components: interaction.message.components
-        })
-        return await interaction.reply({
-            ephemeral: true,
-            content: `<@${chosenUser}>`
-        })
+        return await interaction.editReply(`<@${chosenUser}>`);
     }
 }
