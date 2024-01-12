@@ -1,5 +1,7 @@
 // Dependencies
 import mongoose from "mongoose";
+import moment from "moment";
+
 import { Command } from "@sapphire/framework";
 import { EmbedBuilder } from "discord.js";
 
@@ -11,7 +13,7 @@ export default class extends Command {
 
     registerApplicationCommands(registry: Command.Registry) {
         registry.registerChatInputCommand((builder) =>
-            builder.setName("ping").setDescription("See bot statistics.")
+            builder.setName("ping").setDescription("See DC Utilities' bot statistics.")
         );
     }
 
@@ -23,6 +25,11 @@ export default class extends Command {
             fetchReply: true,
         });
 
+        // Variables
+        const fu = moment.duration(interaction.client.uptime, "milliseconds");
+        const formattedUptime = `${fu.days()}d ${fu.hours()}h ${fu.minutes()}m ${fu.seconds()}s`;
+
+        // Database States
         const DB_States = [
             "Database not Connected.",
             "Database Connected.",
@@ -35,12 +42,11 @@ export default class extends Command {
         // Embed
         const pingEmbed = new EmbedBuilder()
             .setTitle("Utilities Ping Test")
+            .setColor("#44f9fa")
             .addFields(
                 {
                     name: "⏱️ Uptime",
-                    value: `${Math.round(
-                        interaction.client.uptime / 60000
-                    )} Minutes`,
+                    value: `${formattedUptime}`,
                     inline: true,
                 },
                 {
@@ -67,7 +73,10 @@ export default class extends Command {
                     inline: true,
                 }
             )
-            .setColor("#44f9fa");
+            .setFooter({
+                text: "DevConnect Utilities"
+            })
+            .setTimestamp();
 
         return await interaction.editReply({
             content: "",
