@@ -13,15 +13,16 @@ export default class extends Command {
 
     registerApplicationCommands(registry: Command.Registry) {
         registry.registerChatInputCommand((builder) =>
-            builder.setName("ping").setDescription("See DC Utilities' bot statistics.")
+            builder
+                .setName("ping")
+                .setDescription("See DC Utilities' bot statistics.")
         );
     }
 
     async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
         // Fetching Message
-        const originalMessage = await interaction.reply({
+        const originalMessage = await interaction.deferReply({
             ephemeral: true,
-            content: "Fetching Data...",
             fetchReply: true,
         });
 
@@ -34,10 +35,8 @@ export default class extends Command {
             "Database not Connected.",
             "Database Connected.",
             "Connecting to Database.",
-            "Disconnesting from Database.",
+            "Disconnecting from Database.",
         ];
-
-        mongoose.connection.readyState;
 
         // Embed
         const pingEmbed = new EmbedBuilder()
@@ -74,12 +73,11 @@ export default class extends Command {
                 }
             )
             .setFooter({
-                text: "DevConnect Utilities"
+                text: "DC Utilities",
             })
             .setTimestamp();
 
         return await interaction.editReply({
-            content: "",
             embeds: [pingEmbed],
         });
     }
