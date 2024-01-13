@@ -1,4 +1,6 @@
 // Dependencies
+import removeQueries from "../../util/modules/removeQueries.js";
+
 import ChannelConfig from "../../util/schemas/config/channel.js";
 import { createUserSelect } from "../../util/services/UserService/index.js";
 
@@ -33,7 +35,7 @@ export default class extends Listener {
         }
 
         // Length Check
-        if (message.content.length >= 1000 || message.author.bot) {
+        if (message.content.length >= 1024 || message.author.bot) {
             return;
         }
 
@@ -54,26 +56,43 @@ export default class extends Listener {
                     message.author.displayAvatarURL()
                 }`,
             })
-            .addFields(
-                {
-                    name: "Deleted Message",
-                    value: [
-                        `Channel: ${message.url}`,
-                        `Created: <t:${Math.round(
-                            message.createdTimestamp / 1000
-                        )}:f>`,
-                    ].join("\n"),
-                },
-                {
-                    name: "Message Content",
-                    value: `\`\`\`${message.content}\`\`\``,
-                }
-            )
+            .addFields({
+                name: "Deleted Message",
+                value: [
+                    `Channel: ${message.url}`,
+                    `Created: <t:${Math.round(
+                        message.createdTimestamp / 1000
+                    )}:f>`,
+                ].join("\n"),
+            })
             .setColor("Red")
             .setFooter({
                 text: `ID: ${message.id}`,
             })
             .setTimestamp();
+
+        // Extra Checks
+        if (message.content.length > 0) {
+            logEmbed.addFields({
+                name: "Message Content",
+                value: `\`\`\`${message.content}\`\`\``,
+            });
+        }
+
+        // Attachments Check
+        if(message.attachments.size > 0) {
+            const formatted = message.attachments.map(a => {
+                const newURL = removeQueries(a.url)
+                return `[${newURL.hostnameURL}](${newURL.cleanURL})`
+            })
+
+            if(formatted.join("\n").length < 1024) {
+                logEmbed.addFields({
+                    name: "Attachments",
+                    value: formatted.join("\n")
+                })
+            }
+        }
 
         // Message Checks
         if (!fetchedMsgLogsChannel) {
