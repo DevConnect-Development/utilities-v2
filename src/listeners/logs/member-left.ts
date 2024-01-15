@@ -50,7 +50,12 @@ export default class extends Listener {
             })
             .addFields({
                 name: "A User Has Left",
-                value: `User: ${member.user}`,
+                value: [
+                    `User: ${member.user}`,
+                    `Account Created: <t:${Math.round(
+                        member.user.createdTimestamp / 1000
+                    )}>`,
+                ].join("\n"),
             })
             .setColor("Red")
             .setTimestamp();
