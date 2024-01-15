@@ -31,6 +31,10 @@ export default class extends Command {
                                 value: "creations",
                             },
                             {
+                                name: "Best Creations",
+                                value: "bestcreations"
+                            },
+                            {
                                 name: "Help Channel",
                                 value: "help",
                             },
