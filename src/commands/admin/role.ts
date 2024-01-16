@@ -92,7 +92,7 @@ export default class extends Command {
                 );
                 const estimatedTime = `${estimatedTimeDur.hours()}h ${estimatedTimeDur.minutes()}m ${estimatedTimeDur.seconds()}s`;
                 const estimatedTimestamp = `<t:${
-                    currentTimestamp + (formattedMembers.length - 1)
+                    currentTimestamp + (formattedMembers.length / 2)
                 }:R>`;
 
                 // Start Reply
@@ -144,7 +144,7 @@ export default class extends Command {
                 );
                 const estimatedTime = `${estimatedTimeDur.hours()}h ${estimatedTimeDur.minutes()}m ${estimatedTimeDur.seconds()}s`;
                 const estimatedTimestamp = `<t:${
-                    currentTimestamp + (formattedMembers.length - 1)
+                    currentTimestamp + (formattedMembers.length / 2)
                 }:R>`;
 
                 // Start Reply
