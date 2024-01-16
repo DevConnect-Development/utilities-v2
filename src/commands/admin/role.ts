@@ -1,6 +1,15 @@
 // Dependencies
+import moment from "moment";
+
 import { Command } from "@sapphire/framework";
-import { PermissionFlagsBits, Guild, GuildMember, Role } from "discord.js";
+import {
+    PermissionFlagsBits,
+    Guild,
+    GuildMember,
+    Role,
+    EmbedBuilder,
+    Embed,
+} from "discord.js";
 
 // Command
 export default class extends Command {
@@ -48,6 +57,7 @@ export default class extends Command {
 
     async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
         // Variables
+        const currentTimestamp = moment().unix();
         const currentGuild = interaction.guild! as Guild;
         const currentSubCommand = interaction.options.getSubcommand();
 
@@ -65,29 +75,116 @@ export default class extends Command {
             });
         }
 
+        // Embeds
+        const responseEmbed = new EmbedBuilder()
+            .setTitle("Utilities Role Command")
+            .setColor("#44f9fa");
+
         // Commands Switch
         switch (currentSubCommand) {
             case "all": {
-                await interaction.reply("Starting to give out roles...");
+                // Variables
+                const userLength = [];
+
+                const estimatedTimeDur = moment.duration(
+                    formattedMembers.length / 2,
+                    "seconds"
+                );
+                const estimatedTime = `${estimatedTimeDur.hours()}h ${estimatedTimeDur.minutes()}m ${estimatedTimeDur.seconds()}s`;
+                const estimatedTimestamp = `<t:${
+                    currentTimestamp + (formattedMembers.length - 1)
+                }:R>`;
+
+                // Start Reply
+                responseEmbed
+                    .setDescription(
+                        [
+                            `Beginning to give everyone the ${selectedRole} role.`,
+                            `It is estimated to take \`${estimatedTime}\` (${estimatedTimestamp})`,
+                        ].join("\n")
+                    )
+                    .setFooter({ text: "In Progress" })
+                    .setTimestamp();
+                await interaction.reply({
+                    embeds: [responseEmbed],
+                });
+
+                // Role all Users
                 for (const m of formattedMembers) {
-                    await m.roles.add(selectedRole).catch((e) => {
-                        console.log("Failed to add role.");
-                    });
-                    console.log(m.displayName);
+                    if (!m.roles.cache.find((r) => r.id === selectedRole.id)) {
+                        await m.roles.add(selectedRole).catch((e) => {
+                            console.log("Failed to add role.");
+                        });
+                        userLength.push(m.id);
+                    }
                 }
-                return await interaction.editReply("Gave all users the role.");
+
+                // Completed Reply
+                responseEmbed
+                    .setDescription(
+                        `Successfully gave the ${selectedRole} role to ${userLength.length} members.`
+                    )
+                    .setFooter({ text: "Completed" })
+                    .setTimestamp();
+                return await interaction
+                    .editReply({
+                        embeds: [responseEmbed],
+                    })
+                    .catch((e) => {
+                        return;
+                    });
             }
             case "remove": {
-                await interaction.reply("Starting to remove roles...");
-                for (const m of formattedMembers) {
-                    await m.roles.remove(selectedRole).catch((e) => {
-                        console.log("Failed to remove role.");
-                    });
-                    console.log(m.displayName);
-                }
-                return await interaction.editReply(
-                    "Removed the role from all users."
+                // Variables
+                const userLength = [];
+
+                const estimatedTimeDur = moment.duration(
+                    formattedMembers.length / 2,
+                    "seconds"
                 );
+                const estimatedTime = `${estimatedTimeDur.hours()}h ${estimatedTimeDur.minutes()}m ${estimatedTimeDur.seconds()}s`;
+                const estimatedTimestamp = `<t:${
+                    currentTimestamp + (formattedMembers.length - 1)
+                }:R>`;
+
+                // Start Reply
+                responseEmbed
+                    .setDescription(
+                        [
+                            `Beginning to remove the ${selectedRole} role from ${formattedMembers.length} members.`,
+                            `It is estimated to take \`${estimatedTime}\` (${estimatedTimestamp})`,
+                        ].join("\n")
+                    )
+                    .setFooter({ text: "In Progress" })
+                    .setTimestamp();
+                await interaction.reply({
+                    embeds: [responseEmbed],
+                });
+
+                // Remove Roles
+                for (const m of formattedMembers) {
+                    if (m.roles.cache.find((r) => r.id === selectedRole.id)) {
+                        await m.roles.remove(selectedRole).catch((e) => {
+                            console.log("Failed to remove role.");
+                        });
+                        userLength.push(m.id);
+                    }
+                }
+
+                // Completed Reply
+                responseEmbed
+                    .setDescription(
+                        `Successfully removed the ${selectedRole} role from ${userLength.length} members.`
+                    )
+                    .setFooter({ text: "Completed" })
+                    .setTimestamp();
+                return await interaction
+                    .editReply({
+                        embeds: [responseEmbed],
+                    })
+                    .catch((e) => {
+                        return;
+                    });
             }
             default: {
                 return await interaction.reply({
