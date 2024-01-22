@@ -2,6 +2,7 @@
 import robloxVerification from "../../util/schemas/linking/roblox.js";
 
 import noblox from "noblox.js";
+import { getRobloxInfo } from "../../util/services/UserService/index.js";
 
 import { Command } from "@sapphire/framework";
 import { PermissionFlagsBits, EmbedBuilder } from "discord.js";
@@ -54,30 +55,17 @@ export default class extends Command {
             return await interaction.editReply("Interaction has failed.");
         }
 
-        // Roblox User Query
-        const robloxData = await robloxVerification.findOne({
-            discord_id: selectedUser.id,
-            is_complete: true,
-        });
-
         // Fetched Roblox User
-        let fetchedUserInfo;
         let linkedAccountString;
-        try {
-            fetchedUserInfo = await noblox.getPlayerInfo(
-                robloxData?.roblox_id as unknown as number
-            );
-        } catch (e) {
-            fetchedUserInfo = null;
-        }
 
-        if (fetchedUserInfo) {
-            linkedAccountString = `${fetchedUserInfo.username} ***(${
-                robloxData!.roblox_id
-            })***`;
+        // Fetch Roblox User
+        const rblxUser = await getRobloxInfo(interaction, selectedUser)
+
+        if(!rblxUser) {
+            linkedAccountString = "No Account Linked"
         } else {
-            linkedAccountString =
-                "There is no Roblox account linked to this user.";
+            const rblxUserData = await noblox.getUsernameFromId(rblxUser.robloxId)
+            linkedAccountString = `${rblxUserData} ***(${rblxUser.robloxId})***`
         }
 
         // Embeds
