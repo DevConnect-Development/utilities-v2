@@ -1,4 +1,6 @@
 // Dependencies
+import globalConfig from "../../config.js";
+
 import { Command } from "@sapphire/framework";
 import { Guild, GuildMember, EmbedBuilder } from "discord.js";
 
@@ -6,22 +8,25 @@ import { Guild, GuildMember, EmbedBuilder } from "discord.js";
 export default class extends Command {
     constructor(context: Command.LoaderContext, options: Command.Options) {
         super(context, {
-            ...options,
-            preconditions: ["checkRanInGuild"],
+            ...options
         });
     }
 
     registerApplicationCommands(registry: Command.Registry) {
-        registry.registerChatInputCommand((builder) =>
-            builder
-                .setName("levels")
-                .setDescription("View chat level information.")
+        registry.registerChatInputCommand(
+            (builder) => {
+                builder
+                    .setName("levels")
+                    .setDescription("View chat level information.");
+            },
+            {
+                guildIds: globalConfig.allowedGuilds,
+            }
         );
     }
 
     async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-        // Defer Reply
-        const deferredReply = await interaction.deferReply();
+        await interaction.deferReply();
 
         // Variables
         const currentGuild = interaction.guild! as Guild;
@@ -84,9 +89,7 @@ export default class extends Command {
                     value: [
                         `${await getLevel("35")} ${await getRole("Gold I")}`,
                         `${await getLevel("40")} ${await getRole("Gold II")}`,
-                        `${await getLevel("45")} ${await getRole(
-                            "Gold III"
-                        )}`,
+                        `${await getLevel("45")} ${await getRole("Gold III")}`,
                     ].join("\n"),
                     inline: true,
                 },

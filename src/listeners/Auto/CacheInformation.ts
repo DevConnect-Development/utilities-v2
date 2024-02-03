@@ -11,18 +11,12 @@ export default class extends Listener {
     }
 
     async run(client: Client) {
-        // Go Through Guilds
+        // Cycle Guilds
         client.guilds.cache.forEach((g) => {
 
-            // Go Through Channels
-            g.channels.cache.forEach((c) => {
-
-                // Check Channel Type
-                if (c.type === ChannelType.GuildText) {
-                    // Fetch/Cache Messages
-                    c.messages.fetch();
-                }
-            });
+            // Fetch Information
+            g.members.fetch();
+            g.channels.fetch();
         });
     }
 }

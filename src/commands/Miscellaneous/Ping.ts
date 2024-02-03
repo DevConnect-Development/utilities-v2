@@ -8,15 +8,17 @@ import { EmbedBuilder } from "discord.js";
 // Command
 export default class extends Command {
     constructor(context: Command.LoaderContext, options: Command.Options) {
-        super(context, { ...options });
+        super(context, {
+            ...options,
+        });
     }
 
     registerApplicationCommands(registry: Command.Registry) {
-        registry.registerChatInputCommand((builder) =>
+        registry.registerChatInputCommand((builder) => {
             builder
                 .setName("ping")
-                .setDescription("See DC Utilities' bot statistics.")
-        );
+                .setDescription("See DC Utilities' bot statistics.");
+        });
     }
 
     async chatInputRun(interaction: Command.ChatInputCommandInteraction) {

@@ -1,5 +1,5 @@
 // Dependencies
-import robloxVerification from "../../util/schemas/linking/roblox.js";
+import globalConfig from "../../config.js";
 
 import noblox from "noblox.js";
 import { getRobloxInfo } from "../../util/services/UserService/index.js";
@@ -12,24 +12,28 @@ export default class extends Command {
     constructor(context: Command.LoaderContext, options: Command.Options) {
         super(context, {
             ...options,
-            preconditions: ["checkRanInGuild"],
         });
     }
 
     registerApplicationCommands(registry: Command.Registry) {
-        registry.registerChatInputCommand((builder) =>
-            builder
-                .setName("userinfo")
-                .setDescription("See a user's info and linked accounts.")
-                .addUserOption((option) =>
-                    option
-                        .setName("user")
-                        .setDescription("The user to check the info of.")
-                        .setRequired(true)
-                )
-                .setDefaultMemberPermissions(
-                    PermissionFlagsBits.ModerateMembers
-                )
+        registry.registerChatInputCommand(
+            (builder) => {
+                builder
+                    .setName("userinfo")
+                    .setDescription("See a user's info and linked accounts.")
+                    .addUserOption((option) =>
+                        option
+                            .setName("user")
+                            .setDescription("The user to check the info of.")
+                            .setRequired(true)
+                    )
+                    .setDefaultMemberPermissions(
+                        PermissionFlagsBits.ModerateMembers
+                    );
+            },
+            {
+                guildIds: globalConfig.allowedGuilds,
+            }
         );
     }
 
@@ -59,13 +63,15 @@ export default class extends Command {
         let linkedAccountString;
 
         // Fetch Roblox User
-        const rblxUser = await getRobloxInfo(interaction, selectedUser)
+        const rblxUser = await getRobloxInfo(interaction, selectedUser);
 
-        if(!rblxUser) {
-            linkedAccountString = "No Account Linked"
+        if (!rblxUser) {
+            linkedAccountString = "No Account Linked";
         } else {
-            const rblxUserData = await noblox.getUsernameFromId(rblxUser.robloxId)
-            linkedAccountString = `${rblxUserData} ***(${rblxUser.robloxId})***`
+            const rblxUserData = await noblox.getUsernameFromId(
+                rblxUser.robloxId
+            );
+            linkedAccountString = `${rblxUserData} ***(${rblxUser.robloxId})***`;
         }
 
         // Embeds

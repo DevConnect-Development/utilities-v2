@@ -19,7 +19,7 @@ export default class extends InteractionHandler {
     parse(interaction: StringSelectMenuInteraction) {
         const [category, action] = interaction.customId.split(".");
 
-        if (category !== "userservice" && action !== "replyuser") {
+        if (category !== "userservice" || action !== "replyuser") {
             return this.none();
         }
 

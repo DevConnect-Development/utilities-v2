@@ -1,5 +1,4 @@
 // Dependencies
-import channelConfig from "../../util/schemas/config/channel.js";
 import bestCreations from "../../util/schemas/misc/bestCreations.js";
 
 import { Listener } from "@sapphire/framework";
@@ -12,6 +11,9 @@ import {
     EmbedBuilder,
 } from "discord.js";
 
+// Schemas
+import channels from "../../util/schemas/config/channel.js";
+
 export default class extends Listener {
     constructor(context: Listener.LoaderContext, options: Listener.Options) {
         super(context, {
@@ -20,7 +22,7 @@ export default class extends Listener {
         });
     }
 
-    async run(reaction: MessageReaction, user: User) {
+    async run(reaction: MessageReaction) {
         // Guild Check
         if (!reaction.message.guild) {
             return;
@@ -34,12 +36,12 @@ export default class extends Listener {
         const currentAuthor = reaction.message.author! as User;
 
         // Creations Channel
-        const creationsChannel = await channelConfig.findOne({
+        const creationsChannel = await channels.findOne({
             channel_key: "creations",
         });
 
         // Best Creations
-        const bestCreationsC = await channelConfig.findOne({
+        const bestCreationsC = await channels.findOne({
             channel_key: "bestcreations",
         });
         const bestCreationsChannel = currentGuild.channels.cache.find(
@@ -65,35 +67,30 @@ export default class extends Listener {
             })
             .setColor("#FFD700")
             .setTitle(`Featured Creation`)
-            .setURL(currentMessage.url)
+            .setURL(currentMessage.url);
 
         if (currentMessage.content.length > 0) {
             featuredEmbed.setDescription(currentMessage.content);
         }
 
-        if(currentMessage.attachments.size > 0) {
-            featuredEmbed.setImage(currentMessage.attachments.first()!.url)
+        if (currentMessage.attachments.size > 0) {
+            featuredEmbed.setImage(currentMessage.attachments.first()!.url);
         }
 
-        // Check if Channel Matches
-        if (reaction.message.channelId === creationsChannel.channel_id) {
-            // Check if Emoji Matches
-            if (reaction.emoji.name === "⭐") {
-                // Check Minimum Reactions
-                if (reaction.count >= minimumReactions) {
-                    // Create DB Entry
-                    await bestCreations.create({
-                        user_id: currentAuthor.id,
-                        creation_id: currentMessage.id
-                    })
+        if (reaction.message.channelId !== creationsChannel.channel_id) return; // Check Channel ID
+        if (reaction.count < minimumReactions) return; // Check Minimum Reactions
+        if (reaction.emoji.name !== "⭐") return; // Check Emoji
 
-                    // Send Featured Message
-                    return await bestCreationsChannel.send({
-                        content: `${currentAuthor}`,
-                        embeds: [featuredEmbed],
-                    });
-                }
-            }
-        }
+        // Create Best Creation in DB
+        await bestCreations.create({
+            user_id: currentAuthor.id,
+            creation_id: currentMessage.id,
+        });
+
+        // Send Best Creation Embed
+        return await bestCreationsChannel.send({
+            content: `${currentAuthor}`,
+            embeds: [featuredEmbed],
+        });
     }
 }

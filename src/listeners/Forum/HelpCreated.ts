@@ -1,8 +1,17 @@
 // Dependencies
-import channelConfig from "../../util/schemas/config/channel.js";
+import delay from "delay";
 
 import { Listener } from "@sapphire/framework";
-import { ThreadChannel, EmbedBuilder } from "discord.js";
+import {
+    ThreadChannel,
+    ButtonBuilder,
+    ButtonStyle,
+    EmbedBuilder,
+    ActionRowBuilder,
+} from "discord.js";
+
+// Schemas
+import channels from "../../util/schemas/config/channel.js";
 
 function sleep(ms: any) {
     return new Promise((resolve) => {
@@ -20,7 +29,7 @@ export default class extends Listener {
 
     async run(thread: ThreadChannel) {
         // Variables
-        const helpChannel = await channelConfig.findOne({
+        const helpChannel = await channels.findOne({
             channel_key: "help",
         });
 
@@ -29,12 +38,22 @@ export default class extends Listener {
             return;
         }
 
+        // Components
+        const solveIssueButton = new ButtonBuilder()
+            .setCustomId(`help.solveissue`)
+            .setLabel("Mark as Solved")
+            .setEmoji("✅")
+            .setStyle(ButtonStyle.Primary);
+        const buttonAR = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            solveIssueButton
+        );
+
         // Embed
         const helpChannelEmbed = new EmbedBuilder()
             .setDescription(
                 [
                     `**Welcome to the Help channel**! `,
-                    `Before continuing, please;`,
+                    `Before continuing please;`,
                     ``,
                     `- Explain your problem thoroughly.`,
                     `- Share any possible causes you may know.`,
@@ -45,10 +64,11 @@ export default class extends Listener {
 
         // Send Help Embed
         if (thread.parentId === helpChannel.channel_id) {
-            await sleep(1000);
+            await delay(200);
 
             return await thread.send({
                 embeds: [helpChannelEmbed],
+                components: [buttonAR],
             });
         }
     }

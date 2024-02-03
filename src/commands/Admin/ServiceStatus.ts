@@ -1,8 +1,9 @@
 // Dependencies
-import channelConfig from "../../util/schemas/config/channel.js";
+import globalConfig from "../../config.js";
 
-import "moment-timezone";
 import moment from "moment";
+import "moment-timezone";
+
 import { Command } from "@sapphire/framework";
 import {
     PermissionFlagsBits,
@@ -12,50 +13,59 @@ import {
     EmbedBuilder,
 } from "discord.js";
 
+// Schemas
+import channels from "../../util/schemas/config/channel.js";
+
 // Command
 export default class extends Command {
     constructor(context: Command.LoaderContext, options: Command.Options) {
         super(context, {
-            ...options,
-            preconditions: ["checkRanInGuild"],
+            ...options
         });
     }
 
     registerApplicationCommands(registry: Command.Registry) {
-        registry.registerChatInputCommand((builder) =>
-            builder
-                .setName("servicestatus")
-                .setDescription("Send a service status message.")
-                .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-                .addStringOption((option) =>
-                    option
-                        .setName("status")
-                        .setDescription(
-                            "The service status that you would like to send."
-                        )
-                        .setRequired(true)
-                        .addChoices(
-                            {
-                                name: "Operational",
-                                value: "1",
-                            },
-                            {
-                                name: "Resolving",
-                                value: "2",
-                            },
-                            {
-                                name: "Service Distruption",
-                                value: "3",
-                            }
-                        )
-                )
-                .addStringOption((option) =>
-                    option
-                        .setName("message")
-                        .setDescription(
-                            "An additional message that you would like to add."
-                        )
-                )
+        registry.registerChatInputCommand(
+            (builder) => {
+                builder
+                    .setName("servicestatus")
+                    .setDescription("Send a service status message.")
+                    .setDefaultMemberPermissions(
+                        PermissionFlagsBits.Administrator
+                    )
+                    .addStringOption((option) =>
+                        option
+                            .setName("status")
+                            .setDescription(
+                                "The service status that you would like to send."
+                            )
+                            .setRequired(true)
+                            .addChoices(
+                                {
+                                    name: "Operational",
+                                    value: "1",
+                                },
+                                {
+                                    name: "Resolving",
+                                    value: "2",
+                                },
+                                {
+                                    name: "Service Distruption",
+                                    value: "3",
+                                }
+                            )
+                    )
+                    .addStringOption((option) =>
+                        option
+                            .setName("message")
+                            .setDescription(
+                                "An additional message that you would like to add."
+                            )
+                    );
+            },
+            {
+                guildIds: globalConfig.allowedGuilds,
+            }
         );
     }
 
@@ -92,7 +102,7 @@ export default class extends Command {
         let currentStatus: Role;
 
         // Status Channel
-        const statusChannel = await channelConfig.findOne({
+        const statusChannel = await channels.findOne({
             channel_key: "status",
         });
         const fetchedStatusChannel = interaction.guild!.channels.cache.find(
