@@ -43,6 +43,7 @@ export default class extends Listener {
 
         // Best Creations
         const bestCreationsC = await ChannelConfig.findOne({
+            guild_id: globalConfig.communityGuild,
             channel_key: "best_creations",
         });
         const bestCreationsChannel = currentGuild.channels.cache.find(
