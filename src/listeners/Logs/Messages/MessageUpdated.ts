@@ -1,9 +1,12 @@
 // Dependencies
-import ChannelConfig from "../../util/schemas/config/channel.js";
-import { createUserSelect } from "../../util/services/UserService/index.js";
+import globalConfig from "../../../config.js";
+import removeQueries from "../../../util/modules/removeQueries.js";
 
 import { Listener } from "@sapphire/framework";
 import { Message, TextChannel, EmbedBuilder } from "discord.js";
+
+// Schemas
+import ChannelConfig from "../../../util/schemas/config/channel.js";
 
 export default class extends Listener {
     constructor(context: Listener.LoaderContext, options: Listener.Options) {
@@ -14,26 +17,24 @@ export default class extends Listener {
     }
 
     async run(oldmessage: Message, newmessage: Message) {
-        // Server Check
-        if (!newmessage.inGuild()) {
-            return;
-        }
+        // Guild ID Check
+        if (newmessage.guild?.id !== globalConfig.communityGuild) return;
 
-        // Variables
-        const messageLogsChannel = await ChannelConfig.findOne({
-            channel_key: "messagelogs",
+        // Logs Channel
+        const messageLogs = await ChannelConfig.findOne({
+            guild_id: globalConfig.staffGuild,
+            channel_key: "message_logs",
         });
-        const fetchedMsgLogsChannel = newmessage.guild.channels.cache.find(
-            (c) => c.id === messageLogsChannel?.channel_id
+        const messageLogsChannel = this.container.client.channels.cache.find(
+            (c) => c.id === messageLogs?.channel_id
         ) as TextChannel;
 
         // Channel Validity Check
-        if (!messageLogsChannel || !fetchedMsgLogsChannel) {
-            return;
-        }
+        if (!messageLogs || !messageLogsChannel) return;
 
         // Length Check
         if (
+            oldmessage.content === newmessage.content ||
             oldmessage.content.length >= 1000 ||
             newmessage.content.length >= 1000 ||
             newmessage.author.bot
@@ -42,14 +43,6 @@ export default class extends Listener {
         }
 
         // Embeds
-        const userSelect = createUserSelect([
-            {
-                name: `${newmessage.author.username} (${newmessage.author.id})`,
-                userid: newmessage.author.id,
-                description: "The Message Author",
-            },
-        ]);
-
         const logEmbed = new EmbedBuilder()
             .setAuthor({
                 name: `${newmessage.author.username} (${newmessage.author.id})`,
@@ -83,17 +76,24 @@ export default class extends Listener {
             })
             .setTimestamp();
 
-        // Message Checks
-        if (!fetchedMsgLogsChannel) {
-            return;
-        }
-        if (oldmessage.content === newmessage.content) {
-            return;
+        // Attachments Check
+        if (newmessage.attachments.size > 0) {
+            const formatted = newmessage.attachments.map((a) => {
+                const newURL = removeQueries(a.url);
+                return `[${newURL.hostnameURL}](${newURL.cleanURL})`;
+            });
+
+            if (formatted.join("\n").length < 1024) {
+                logEmbed.addFields({
+                    name: "Attachments",
+                    value: formatted.join("\n"),
+                });
+            }
         }
 
-        return await fetchedMsgLogsChannel.send({
+        // Send Log
+        return await messageLogsChannel.send({
             embeds: [logEmbed],
-            components: [userSelect],
         });
     }
 }

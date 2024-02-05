@@ -32,7 +32,10 @@ export default class extends Command {
                     );
             },
             {
-                guildIds: globalConfig.allowedGuilds,
+                guildIds: [
+                    globalConfig.communityGuild,
+                    globalConfig.developmentGuild,
+                ],
             }
         );
     }

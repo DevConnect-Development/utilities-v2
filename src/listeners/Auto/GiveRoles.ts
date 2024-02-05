@@ -1,4 +1,6 @@
 // Dependencies
+import globalConfig from "../../config.js";
+
 import { Listener } from "@sapphire/framework";
 import { GuildMember } from "discord.js";
 
@@ -11,6 +13,9 @@ export default class extends Listener {
     }
 
     async run(member: GuildMember) {
+        // Guild ID Check
+        if (member.guild.id !== globalConfig.communityGuild) return;
+
         // Variables
         const memberRole = member.guild.roles.cache.find(
             (r) => r.name === "Member"

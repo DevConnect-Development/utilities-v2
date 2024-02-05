@@ -8,7 +8,7 @@ import { Guild, GuildMember, EmbedBuilder } from "discord.js";
 export default class extends Command {
     constructor(context: Command.LoaderContext, options: Command.Options) {
         super(context, {
-            ...options
+            ...options,
         });
     }
 
@@ -20,7 +20,10 @@ export default class extends Command {
                     .setDescription("View chat level information.");
             },
             {
-                guildIds: globalConfig.allowedGuilds,
+                guildIds: [
+                    globalConfig.communityGuild,
+                    globalConfig.developmentGuild,
+                ],
             }
         );
     }

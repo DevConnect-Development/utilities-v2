@@ -1,44 +1,35 @@
 // Dependencies
-import ChannelConfig from "../../util/schemas/config/channel.js";
-import { createUserSelect } from "../../util/services/UserService/index.js";
+import globalConfig from "../../../config.js";
 
 import { Listener } from "@sapphire/framework";
 import { GuildMember, TextChannel, EmbedBuilder } from "discord.js";
+
+// Schemas
+import ChannelConfig from "../../../util/schemas/config/channel.js";
 
 export default class extends Listener {
     constructor(context: Listener.LoaderContext, options: Listener.Options) {
         super(context, {
             ...options,
-            event: "guildMemberAdd",
+            event: "guildMemberRemove",
         });
     }
 
     async run(member: GuildMember) {
-        // Variables
-        const joinlogsChannel = await ChannelConfig.findOne({
-            channel_key: "joinlogs",
+        // Guild ID Check
+        if (member.guild.id !== globalConfig.communityGuild) return;
+
+        // Logs Channel
+        const memberLogs = await ChannelConfig.findOne({
+            guild_id: globalConfig.staffGuild,
+            channel_key: "member_logs",
         });
-        const fetchedJoinLogsChannel = member.guild.channels.cache.find(
-            (c) => c.id === joinlogsChannel?.channel_id
+        const memberLogsChannel = this.container.client.channels.cache.find(
+            (c) => c.id === memberLogs?.channel_id
         ) as TextChannel;
 
         // Channel Validity Check
-        if (!joinlogsChannel || !fetchedJoinLogsChannel) {
-            return;
-        }
-
-        // Components
-        const userSelect = createUserSelect(
-            [
-                {
-                    name: `${member.user.username} (${member.user.id})`,
-                    userid: member.user.id,
-
-                    description: "Current Account",
-                },
-            ],
-            "Alt Accounts List"
-        );
+        if (!memberLogs || !memberLogsChannel) return;
 
         // Embeds
         const logEmbed = new EmbedBuilder()
@@ -49,7 +40,7 @@ export default class extends Listener {
                 }`,
             })
             .addFields({
-                name: "A New User Has Joined",
+                name: "A User Has Left",
                 value: [
                     `User: ${member.user}`,
                     `Account Created: <t:${Math.round(
@@ -57,12 +48,12 @@ export default class extends Listener {
                     )}>`,
                 ].join("\n"),
             })
-            .setColor("Green")
+            .setColor("Red")
             .setTimestamp();
 
-        return await fetchedJoinLogsChannel.send({
+        // Send Log
+        return await memberLogsChannel.send({
             embeds: [logEmbed],
-            components: [userSelect],
         });
     }
 }

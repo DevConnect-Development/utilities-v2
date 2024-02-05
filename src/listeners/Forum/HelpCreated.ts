@@ -11,13 +11,7 @@ import {
 } from "discord.js";
 
 // Schemas
-import channels from "../../util/schemas/config/channel.js";
-
-function sleep(ms: any) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
-}
+import ChannelConfig from "../../util/schemas/config/channel.js";
 
 export default class extends Listener {
     constructor(context: Listener.LoaderContext, options: Listener.Options) {
@@ -29,8 +23,9 @@ export default class extends Listener {
 
     async run(thread: ThreadChannel) {
         // Variables
-        const helpChannel = await channels.findOne({
-            channel_key: "help",
+        const helpChannel = await ChannelConfig.findOne({
+            guild_id: thread.guildId,
+            channel_key: "help_forum",
         });
 
         // Key Exist Check

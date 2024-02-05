@@ -7,8 +7,9 @@ import "moment-timezone";
 import { Command } from "@sapphire/framework";
 import {
     PermissionFlagsBits,
-    TextChannel,
+    Guild,
     GuildMember,
+    TextChannel,
     Role,
     EmbedBuilder,
 } from "discord.js";
@@ -20,7 +21,7 @@ import channels from "../../util/schemas/config/channel.js";
 export default class extends Command {
     constructor(context: Command.LoaderContext, options: Command.Options) {
         super(context, {
-            ...options
+            ...options,
         });
     }
 
@@ -64,25 +65,36 @@ export default class extends Command {
                     );
             },
             {
-                guildIds: globalConfig.allowedGuilds,
+                guildIds: [
+                    globalConfig.communityGuild,
+                    globalConfig.developmentGuild,
+                ],
             }
         );
     }
 
     async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-        // Deferred Reply
-        const deferredReply = await interaction.deferReply({
+        // Defer Reply
+        await interaction.deferReply({
             ephemeral: true,
         });
 
+        // Variables
+        const currentTime = moment().tz("America/New_York").format("lll");
+        const currentGuild = interaction.guild! as Guild;
+        const currentMember = interaction.member! as GuildMember;
+
+        const chosenStatus = interaction.options.getString("status");
+        const addedMessage = interaction.options.getString("message");
+
         // Roles
-        const operationalRole = interaction.guild!.roles.cache.find(
+        const operationalRole = currentGuild.roles.cache.find(
             (r) => r.name === "Operational"
         );
-        const resolvingRole = interaction.guild!.roles.cache.find(
+        const resolvingRole = currentGuild.roles.cache.find(
             (r) => r.name === "Resolving"
         );
-        const distruptionRole = interaction.guild!.roles.cache.find(
+        const distruptionRole = currentGuild.roles.cache.find(
             (r) => r.name === "Service Disruption"
         );
 
@@ -91,37 +103,31 @@ export default class extends Command {
             return await interaction.editReply("Interaction has failed.");
         }
 
-        // Variables
-        const currentTime = moment().tz("America/New_York").format("lll");
-        const currentMember = interaction.member! as GuildMember;
-
-        const chosenStatus = interaction.options.getString("status");
-        const addedMessage = interaction.options.getString("message");
-
         let currentText: Array<String> = [];
         let currentStatus: Role;
 
         // Status Channel
-        const statusChannel = await channels.findOne({
-            channel_key: "status",
+        const statusNotices = await channels.findOne({
+            guild_id: interaction.guild?.id,
+            channel_key: "status_notices",
         });
-        const fetchedStatusChannel = interaction.guild!.channels.cache.find(
-            (c) => c.id === statusChannel?.channel_id
+        const statusNoticesChannel = this.container.client.channels.cache.find(
+            (c) => c.id === statusNotices?.channel_id
         ) as TextChannel;
 
         // Check Status Key
         switch (chosenStatus) {
             case "1":
                 currentStatus = operationalRole;
-                fetchedStatusChannel.setName("🟢┃status");
+                statusNoticesChannel.setName("🟢┃status");
                 break;
             case "2":
                 currentStatus = resolvingRole;
-                fetchedStatusChannel.setName("🟡┃status");
+                statusNoticesChannel.setName("🟡┃status");
                 break;
             case "3":
                 currentStatus = distruptionRole;
-                fetchedStatusChannel.setName("🔴┃status");
+                statusNoticesChannel.setName("🔴┃status");
                 break;
             default:
                 return await interaction.editReply(
@@ -151,13 +157,13 @@ export default class extends Command {
             });
 
         // Send Status Message
-        fetchedStatusChannel.send({
+        statusNoticesChannel.send({
             embeds: [statusEmbed],
         });
 
         // Edit Reply
         return await interaction.editReply({
-            content: `Successfully sent the status message to ${fetchedStatusChannel}!`,
+            content: `Successfully sent the status message to ${statusNoticesChannel}!`,
         });
     }
 }

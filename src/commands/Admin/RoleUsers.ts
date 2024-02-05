@@ -69,7 +69,10 @@ export default class extends Subcommand {
                     );
             },
             {
-                guildIds: globalConfig.allowedGuilds,
+                guildIds: [
+                    globalConfig.communityGuild,
+                    globalConfig.developmentGuild,
+                ],
             }
         );
     }

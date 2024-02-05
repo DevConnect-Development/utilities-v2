@@ -4,8 +4,9 @@ config();
 
 // Config Export
 export default {
-    guildID: `${process.env.GUILD_ID}`,
-    allowedGuilds: [`${process.env.GUILD_ID}`],
+    communityGuild: "1054956623182975068",
+    staffGuild: "1203996871039651840",
+    developmentGuild: "1193804554790260739",
 
     clientToken: `${process.env.TOKEN}`,
     clientID: `${process.env.CLIENT_ID}`

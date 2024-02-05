@@ -1,6 +1,5 @@
 // Dependencies
-import bestCreations from "../../util/schemas/misc/bestCreations.js";
-
+import globalConfig from "../../config.js";
 import { Listener } from "@sapphire/framework";
 import {
     MessageReaction,
@@ -12,7 +11,8 @@ import {
 } from "discord.js";
 
 // Schemas
-import channels from "../../util/schemas/config/channel.js";
+import ChannelConfig from "../../util/schemas/config/channel.js";
+import BestCreations from "../../util/schemas/misc/bestCreations.js";
 
 export default class extends Listener {
     constructor(context: Listener.LoaderContext, options: Listener.Options) {
@@ -36,13 +36,14 @@ export default class extends Listener {
         const currentAuthor = reaction.message.author! as User;
 
         // Creations Channel
-        const creationsChannel = await channels.findOne({
+        const creationsChannel = await ChannelConfig.findOne({
+            guild_id: globalConfig.communityGuild,
             channel_key: "creations",
         });
 
         // Best Creations
-        const bestCreationsC = await channels.findOne({
-            channel_key: "bestcreations",
+        const bestCreationsC = await ChannelConfig.findOne({
+            channel_key: "best_creations",
         });
         const bestCreationsChannel = currentGuild.channels.cache.find(
             (ch) => ch.id === bestCreationsC?.channel_id
@@ -55,7 +56,7 @@ export default class extends Listener {
         if (!bestCreationsC || !bestCreationsChannel) {
             return;
         }
-        if (await bestCreations.exists({ creation_id: reaction.message.id })) {
+        if (await BestCreations.exists({ creation_id: reaction.message.id })) {
             return;
         }
 
@@ -82,7 +83,7 @@ export default class extends Listener {
         if (reaction.emoji.name !== "⭐") return; // Check Emoji
 
         // Create Best Creation in DB
-        await bestCreations.create({
+        await BestCreations.create({
             user_id: currentAuthor.id,
             creation_id: currentMessage.id,
         });
