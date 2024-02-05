@@ -13,10 +13,16 @@ export default class extends Listener {
     async run(client: Client) {
         // Cycle Guilds
         client.guilds.cache.forEach((g) => {
-
-            // Fetch Information
+            // Fetch Members & Messages
             g.members.fetch();
             g.channels.fetch();
+
+            // Message Fetch
+            g.channels.cache.forEach((c) => {
+                if (c.type !== ChannelType.GuildText) return;
+
+                c.messages.fetch();
+            });
         });
     }
 }
