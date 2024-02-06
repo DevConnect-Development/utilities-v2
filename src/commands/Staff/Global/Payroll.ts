@@ -61,12 +61,20 @@ export default class extends Command {
         const payrollEmbed = new EmbedBuilder()
             .setAuthor({
                 iconURL: interaction.user.displayAvatarURL(),
-                name: `${interaction.user.username} (${interaction.user.id})`,
+                name: `${interaction.user.username}`,
             })
-            .addFields({
-                name: "Current Balance",
-                value: `\`${formattedUsdAmount}\``,
-            });
+            .setColor("#44f9fa")
+            .addFields(
+                {
+                    name: "Role",
+                    value: `${currentPayroll.current_role ? currentPayroll.current_role : "No Role"}`,
+                },
+                {
+                    name: "Current Balance",
+                    value: `${formattedUsdAmount}`,
+                }
+            )
+            .setTimestamp();
 
         // Return Response
         return interaction.editReply({
