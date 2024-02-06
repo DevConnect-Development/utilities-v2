@@ -84,7 +84,7 @@ export default class extends Command {
                 }`,
             })
             .setColor("#44f9fa")
-            .setDescription(["**BALANCE**", `${formattedUsdAmount}`].join("\n"))
+            .setDescription(["**Balance**", `${formattedUsdAmount}`].join("\n"))
             .setTimestamp();
 
         // Return Response
