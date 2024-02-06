@@ -25,17 +25,8 @@ export default class extends Command {
         registry.registerChatInputCommand(
             (builder) => {
                 builder
-                    .setName("userinfo")
-                    .setDescription("See a user's info and linked accounts.")
-                    .addUserOption((option) =>
-                        option
-                            .setName("user")
-                            .setDescription("The user to check the info of.")
-                            .setRequired(true)
-                    )
-                    .setDefaultMemberPermissions(
-                        PermissionFlagsBits.ModerateMembers
-                    );
+                    .setName("payroll")
+                    .setDescription("Check your Payroll as a DC Staff Member.")
             },
             {
                 guildIds: [globalConfig.staffGuild],
