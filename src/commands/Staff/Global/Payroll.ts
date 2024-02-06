@@ -45,7 +45,9 @@ export default class extends Command {
 
     async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
         // Defer Reply
-        await interaction.deferReply();
+        await interaction.deferReply({
+            ephemeral: true,
+        });
 
         // Variables
         let currentPayroll = await PayrollAmount.findOne({
@@ -61,9 +63,11 @@ export default class extends Command {
         }
 
         // Payroll Embed
-        const formattedUsdAmount = usdFormatter.format(currentPayroll.usd_amount as number)
+        const formattedUsdAmount = usdFormatter.format(
+            currentPayroll.usd_amount as number
+        );
 
         // Return Response
-        return interaction.editReply(`$${formattedUsdAmount}`)
+        return interaction.editReply(`$${formattedUsdAmount}`);
     }
 }
