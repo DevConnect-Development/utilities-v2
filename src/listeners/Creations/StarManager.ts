@@ -11,8 +11,8 @@ import {
 } from "discord.js";
 
 // Schemas
-import ChannelConfig from "../../util/schemas/config/channel.js";
-import BestCreations from "../../util/schemas/misc/bestCreations.js";
+import ChannelConfig from "../../util/schemas/Config/ChannelConfig.js";
+import BestCreations from "../../util/schemas/Misc/BestCreations.js";
 
 export default class extends Listener {
     constructor(context: Listener.LoaderContext, options: Listener.Options) {

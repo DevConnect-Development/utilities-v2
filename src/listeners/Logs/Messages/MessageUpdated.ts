@@ -6,7 +6,7 @@ import { Listener } from "@sapphire/framework";
 import { Message, TextChannel, EmbedBuilder } from "discord.js";
 
 // Schemas
-import ChannelConfig from "../../../util/schemas/config/channel.js";
+import ChannelConfig from "../../../util/schemas/Config/ChannelConfig.js";
 
 export default class extends Listener {
     constructor(context: Listener.LoaderContext, options: Listener.Options) {

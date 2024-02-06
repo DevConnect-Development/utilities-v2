@@ -15,7 +15,7 @@ import {
 } from "discord.js";
 
 // Schemas
-import channels from "../../util/schemas/config/channel.js";
+import channels from "../../util/schemas/Config/ChannelConfig.js";
 
 // Command
 export default class extends Command {

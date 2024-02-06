@@ -5,7 +5,7 @@ import { Subcommand } from "@sapphire/plugin-subcommands";
 import { PermissionFlagsBits, Guild, ChannelType } from "discord.js";
 
 // Schemas
-import ChannelConfig from "../../util/schemas/config/channel.js";
+import ChannelConfig from "../../util/schemas/Config/ChannelConfig.js";
 
 // Command
 export default class extends Subcommand {
