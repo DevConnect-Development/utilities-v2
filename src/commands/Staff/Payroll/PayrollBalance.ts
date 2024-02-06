@@ -60,6 +60,8 @@ export default class extends Command {
         if (!currentPayroll) {
             currentPayroll = await PayrollAmount.create({
                 user_id: interaction.user.id,
+                current_role: "",
+                
                 usd_amount: "0",
             });
         }
