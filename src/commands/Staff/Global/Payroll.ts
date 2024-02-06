@@ -31,6 +31,10 @@ export default class extends Subcommand {
                     name: "setbal",
                     chatInputRun: "setBalance",
                 },
+                {
+                    name: "setrole",
+                    chatInputRun: "setRole",
+                },
             ],
         });
     }
@@ -68,7 +72,28 @@ export default class extends Subcommand {
                                     )
                                     .setRequired(true)
                             )
-                    );
+                    )
+                    .addSubcommand((command) =>
+                    command
+                        .setName("setrole")
+                        .setDescription("Set a user's role.")
+                        .addUserOption((option) =>
+                            option
+                                .setName("user")
+                                .setDescription(
+                                    "The Staff Member you'd like to set the role of."
+                                )
+                                .setRequired(true)
+                        )
+                        .addStringOption((option) =>
+                            option
+                                .setName("role")
+                                .setDescription(
+                                    "The role to change it to."
+                                )
+                                .setRequired(true)
+                        )
+                );
             },
             {
                 guildIds: [globalConfig.staffGuild],
@@ -117,7 +142,7 @@ export default class extends Subcommand {
                 }`,
             })
             .setColor("#44f9fa")
-            .setDescription(["**Balance**", `${formattedUsdAmount}`].join("\n"))
+            .setDescription(`> \`${formattedUsdAmount}\``)
             .setTimestamp();
 
         // Return Response
@@ -183,7 +208,7 @@ export default class extends Subcommand {
                 }`,
             })
             .setColor("Orange")
-            .setDescription("Balance Update")
+            .setDescription("> Balance Update")
             .addFields(
                 {
                     name: "Previous Balance",
@@ -193,6 +218,80 @@ export default class extends Subcommand {
                 {
                     name: "New Balance",
                     value: `${formattedNewBalance}`,
+                    inline: true,
+                }
+            )
+            .setTimestamp();
+
+        // Return Response
+        return interaction.editReply({
+            embeds: [payrollEmbed],
+        });
+    }
+
+    public async setRole(interaction: Command.ChatInputCommandInteraction) {
+        // Permissions Check
+        if (
+            !interaction.memberPermissions?.has(
+                PermissionFlagsBits.Administrator
+            )
+        ) {
+            return;
+        }
+
+        // Defer Reply
+        await interaction.deferReply({
+            ephemeral: true,
+        });
+
+        // Variables
+        const selectedUser = interaction.options.getUser("user");
+        const selectedRole = interaction.options.getString("role");
+
+        // Parameter Check
+        if (!selectedUser || !selectedRole) {
+            return interaction.editReply("Interaction has failed.");
+        }
+
+        // Payroll Information
+        let currentPayroll = await PayrollAmount.findOne({
+            user_id: selectedUser.id,
+        });
+        if (!currentPayroll) {
+            currentPayroll = await PayrollAmount.create({
+                user_id: interaction.user.id,
+                current_role: "",
+
+                usd_amount: "0",
+            });
+        }
+
+        // Update Payroll
+        await currentPayroll.updateOne({
+            current_role: `${selectedRole}`,
+        });
+
+        // Payroll Embed
+        const payrollEmbed = new EmbedBuilder()
+            .setAuthor({
+                iconURL: interaction.user.displayAvatarURL(),
+                name: `${interaction.user.username} ${
+                    selectedRole
+                        ? `(${selectedRole})`
+                        : ""
+                }`,
+            })
+            .setColor("Orange")
+            .setDescription("> Role Update")
+            .addFields(
+                {
+                    name: "Previous Role",
+                    value: `${currentPayroll.current_role}`,
+                    inline: true,
+                },
+                {
+                    name: "New Role",
+                    value: `${selectedRole}`,
                     inline: true,
                 }
             )
