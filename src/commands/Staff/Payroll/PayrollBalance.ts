@@ -43,8 +43,8 @@ export default class extends Command {
 
     async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
         // Subcommand Check
-        const currentSubCommand = interaction.options.getSubcommand()
-        if(currentSubCommand !== "balance") return;
+        const currentSubCommand = interaction.options.getSubcommand();
+        if (currentSubCommand !== "balance") return;
 
         // Defer Reply
         await interaction.deferReply({
@@ -60,14 +60,18 @@ export default class extends Command {
         if (!currentPayroll) {
             currentPayroll = await PayrollAmount.create({
                 user_id: interaction.user.id,
-                usd_amount: 0,
+                usd_amount: "0",
             });
         }
 
+        // Payroll Number Check
+        const payrollAsNumber = currentPayroll.usd_amount as unknown as number;
+        if (isNaN(payrollAsNumber)) {
+            return interaction.editReply("Interaction has failed.");
+        }
+
         // Payroll Embed
-        const formattedUsdAmount = usdFormatter.format(
-            currentPayroll.usd_amount as number
-        );
+        const formattedUsdAmount = usdFormatter.format(payrollAsNumber);
 
         const payrollEmbed = new EmbedBuilder()
             .setAuthor({
