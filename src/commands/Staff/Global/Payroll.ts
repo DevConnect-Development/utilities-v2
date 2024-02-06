@@ -68,10 +68,12 @@ export default class extends Command {
                 {
                     name: "Role",
                     value: `${currentPayroll.current_role ? currentPayroll.current_role : "No Role"}`,
+                    inline: true,
                 },
                 {
-                    name: "Current Balance",
+                    name: "Balance",
                     value: `${formattedUsdAmount}`,
+                    inline: true,
                 }
             )
             .setTimestamp();
