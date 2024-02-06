@@ -61,7 +61,7 @@ export default class extends Command {
             currentPayroll = await PayrollAmount.create({
                 user_id: interaction.user.id,
                 current_role: "",
-                
+
                 usd_amount: "0",
             });
         }
@@ -71,32 +71,20 @@ export default class extends Command {
         if (isNaN(payrollAsNumber)) {
             return interaction.editReply("Interaction has failed.");
         }
-
-        // Payroll Embed
         const formattedUsdAmount = usdFormatter.format(payrollAsNumber);
 
+        // Payroll Embed
         const payrollEmbed = new EmbedBuilder()
             .setAuthor({
                 iconURL: interaction.user.displayAvatarURL(),
-                name: `${interaction.user.username}`,
+                name: `${interaction.user.username} ${
+                    currentPayroll.current_role
+                        ? `(${currentPayroll.current_role})`
+                        : ""
+                }`,
             })
             .setColor("#44f9fa")
-            .addFields(
-                {
-                    name: "Role",
-                    value: `${
-                        currentPayroll.current_role
-                            ? currentPayroll.current_role
-                            : "No Role"
-                    }`,
-                    inline: true,
-                },
-                {
-                    name: "Balance",
-                    value: `${formattedUsdAmount}`,
-                    inline: true,
-                }
-            )
+            .setDescription(["**BALANCE**", `${formattedUsdAmount}`].join("\n"))
             .setTimestamp();
 
         // Return Response
