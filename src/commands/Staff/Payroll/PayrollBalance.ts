@@ -26,6 +26,7 @@ export default class extends Command {
             (builder) => {
                 builder
                     .setName("payroll")
+                    .setDescription("Payroll-related commands.")
                     .addSubcommand((command) =>
                         command
                             .setName("balance")
