@@ -146,7 +146,7 @@ export default class extends Subcommand {
             .setTimestamp();
 
         // Return Response
-        return interaction.editReply({
+        return await interaction.editReply({
             embeds: [payrollEmbed],
         });
     }
@@ -181,7 +181,7 @@ export default class extends Subcommand {
         });
         if (!currentPayroll) {
             currentPayroll = await PayrollAmount.create({
-                user_id: interaction.user.id,
+                user_id: selectedUser.id,
                 current_role: "",
 
                 usd_amount: "0",
@@ -200,8 +200,8 @@ export default class extends Subcommand {
         const formattedNewBalance = usdFormatter.format(selectedBalance);
         const payrollEmbed = new EmbedBuilder()
             .setAuthor({
-                iconURL: interaction.user.displayAvatarURL(),
-                name: `${interaction.user.username} ${
+                iconURL: selectedUser.displayAvatarURL(),
+                name: `${selectedUser.username} ${
                     currentPayroll.current_role
                         ? `(${currentPayroll.current_role})`
                         : ""
@@ -224,7 +224,7 @@ export default class extends Subcommand {
             .setTimestamp();
 
         // Return Response
-        return interaction.editReply({
+        return await interaction.editReply({
             embeds: [payrollEmbed],
         });
     }
@@ -259,7 +259,7 @@ export default class extends Subcommand {
         });
         if (!currentPayroll) {
             currentPayroll = await PayrollAmount.create({
-                user_id: interaction.user.id,
+                user_id: selectedUser.id,
                 current_role: "",
 
                 usd_amount: "0",
@@ -274,8 +274,8 @@ export default class extends Subcommand {
         // Payroll Embed
         const payrollEmbed = new EmbedBuilder()
             .setAuthor({
-                iconURL: interaction.user.displayAvatarURL(),
-                name: `${interaction.user.username} ${
+                iconURL: selectedUser.displayAvatarURL(),
+                name: `${selectedUser.username} ${
                     selectedRole
                         ? `(${selectedRole})`
                         : ""
@@ -298,7 +298,7 @@ export default class extends Subcommand {
             .setTimestamp();
 
         // Return Response
-        return interaction.editReply({
+        return await interaction.editReply({
             embeds: [payrollEmbed],
         });
     }
