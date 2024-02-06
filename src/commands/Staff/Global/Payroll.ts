@@ -26,7 +26,7 @@ export default class extends Command {
             (builder) => {
                 builder
                     .setName("payroll")
-                    .setDescription("Check your Payroll as a DC Staff Member.")
+                    .setDescription("Check your Payroll as a DC Staff Member.");
             },
             {
                 guildIds: [globalConfig.staffGuild],
@@ -58,7 +58,19 @@ export default class extends Command {
             currentPayroll.usd_amount as number
         );
 
+        const payrollEmbed = new EmbedBuilder()
+            .setAuthor({
+                iconURL: interaction.user.displayAvatarURL(),
+                name: `${interaction.user.username} (${interaction.user.id})`,
+            })
+            .addFields({
+                name: "Current Balance",
+                value: `\`${formattedUsdAmount}\``,
+            });
+
         // Return Response
-        return interaction.editReply(`$${formattedUsdAmount}`);
+        return interaction.editReply({
+            embeds: [payrollEmbed],
+        });
     }
 }

@@ -5,6 +5,7 @@ import { Schema, model } from "mongoose";
 const schemaName = "Payroll Amount";
 let currentSchema = new Schema({
     user_id: String,
+
     usd_amount: Number,
 });
 
