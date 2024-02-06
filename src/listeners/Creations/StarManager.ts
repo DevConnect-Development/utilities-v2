@@ -12,7 +12,7 @@ import {
 
 // Schemas
 import ChannelConfig from "../../util/schemas/Config/ChannelConfig.js";
-import BestCreations from "../../util/schemas/Misc/BestCreations.js";
+import BestCreations from "../../util/schemas/Miscellaneous/BestCreations.js";
 
 export default class extends Listener {
     constructor(context: Listener.LoaderContext, options: Listener.Options) {
