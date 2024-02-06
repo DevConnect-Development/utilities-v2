@@ -26,7 +26,13 @@ export default class extends Command {
             (builder) => {
                 builder
                     .setName("payroll")
-                    .setDescription("Check your Payroll as a DC Staff Member.");
+                    .addSubcommand((command) =>
+                        command
+                            .setName("balance")
+                            .setDescription(
+                                "Check your Payroll as a DC Staff Member."
+                            )
+                    );
             },
             {
                 guildIds: [globalConfig.staffGuild],
@@ -35,6 +41,10 @@ export default class extends Command {
     }
 
     async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
+        // Subcommand Check
+        const currentSubCommand = interaction.options.getSubcommand()
+        if(currentSubCommand !== "balance") return;
+
         // Defer Reply
         await interaction.deferReply({
             ephemeral: true,
@@ -67,7 +77,11 @@ export default class extends Command {
             .addFields(
                 {
                     name: "Role",
-                    value: `${currentPayroll.current_role ? currentPayroll.current_role : "No Role"}`,
+                    value: `${
+                        currentPayroll.current_role
+                            ? currentPayroll.current_role
+                            : "No Role"
+                    }`,
                     inline: true,
                 },
                 {
