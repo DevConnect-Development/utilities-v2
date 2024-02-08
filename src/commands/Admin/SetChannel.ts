@@ -67,6 +67,11 @@ export default class extends Subcommand {
                                             name: "Status Notices",
                                             value: "status_notices",
                                         }
+                                        ,
+                                        {
+                                            name: "Skill Role Applications",
+                                            value: "skill_applications",
+                                        }
                                     )
                                     .setRequired(true)
                             )

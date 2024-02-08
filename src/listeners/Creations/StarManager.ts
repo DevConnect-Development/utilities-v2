@@ -51,10 +51,7 @@ export default class extends Listener {
         ) as TextChannel;
 
         // Exist Check
-        if (!creationsChannel) {
-            return;
-        }
-        if (!bestCreationsC || !bestCreationsChannel) {
+        if (!creationsChannel || !bestCreationsC || !bestCreationsChannel) {
             return;
         }
         if (await BestCreations.exists({ creation_id: reaction.message.id })) {
