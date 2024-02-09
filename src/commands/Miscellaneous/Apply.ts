@@ -20,10 +20,7 @@ export default class extends Command {
                     .setDescription("Application management panel.");
             },
             {
-                guildIds: [
-                    globalConfig.communityGuild,
-                    globalConfig.developmentGuild,
-                ],
+                guildIds: [globalConfig.developmentGuild],
             }
         );
     }

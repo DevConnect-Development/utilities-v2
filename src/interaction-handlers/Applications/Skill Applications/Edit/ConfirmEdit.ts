@@ -62,10 +62,18 @@ export default class extends InteractionHandler {
         // Update Past Work
         const pastWork = applicationPastWork
             .split("\n")
-            .filter((line) => line.trim() !== "");
+        const filteredPastWork = []
+
+        for (const work in pastWork) {
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            if (work === "") return;
+            if(!urlRegex.test(work)) return;
+
+            filteredPastWork.push(work)
+        }
         await fetchedApplication.updateOne({
             provided_comment: applicationAdditionalComment,
-            provided_work: pastWork,
+            provided_work: filteredPastWork,
         });
 
         // Fetch Embed
