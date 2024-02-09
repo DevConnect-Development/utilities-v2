@@ -66,15 +66,6 @@ export default class extends InteractionHandler {
             });
         }
 
-        // Fetch Embed
-        const createEmbed = await resetSkillLogEmbed(fetchedApplication.app_id);
-        if (!createEmbed) {
-            return await interaction.editReply({
-                content: "Interaction has failed.",
-                components: [],
-            });
-        }
-
         // Add Role
         const selectedMember = interaction.guild?.members.cache.find(
             (u) => u.id === fetchedApplication.author_id
@@ -96,6 +87,15 @@ export default class extends InteractionHandler {
             app_status: "Approved",
             app_reviewer: interaction.user.id,
         });
+
+        // Fetch Embed
+        const createEmbed = await resetSkillLogEmbed(fetchedApplication.app_id);
+        if (!createEmbed) {
+            return await interaction.editReply({
+                content: "Interaction has failed.",
+                components: [],
+            });
+        }
 
         // Send Log Embed
         await skillAppLogsChannel.send({

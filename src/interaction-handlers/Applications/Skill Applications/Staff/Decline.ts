@@ -66,6 +66,12 @@ export default class extends InteractionHandler {
             });
         }
 
+        // Set Application Status
+        await fetchedApplication.updateOne({
+            app_status: "Declined",
+            app_reviewer: interaction.user.id,
+        });
+
         // Fetch Embed
         const createEmbed = await resetSkillLogEmbed(fetchedApplication.app_id);
         if (!createEmbed) {
@@ -74,12 +80,6 @@ export default class extends InteractionHandler {
                 components: [],
             });
         }
-
-        // Set Application Status
-        await fetchedApplication.updateOne({
-            app_status: "Declined",
-            app_reviewer: interaction.user.id,
-        });
 
         // Send Log Embed
         await skillAppLogsChannel.send({
