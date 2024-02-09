@@ -57,9 +57,9 @@ export default async function (applicationID: String) {
 
     // Color Change
     if (fetchedApplication.app_status === "Approved") {
-        mainEmbed.setColor("Green");
+        await mainEmbed.setColor("Green");
     } else if (fetchedApplication.app_status === "Declined") {
-        mainEmbed.setColor("Red");
+        await mainEmbed.setColor("Red");
     }
 
     // Return Embed

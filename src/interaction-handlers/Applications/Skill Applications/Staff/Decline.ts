@@ -26,7 +26,7 @@ export default class extends InteractionHandler {
     parse(interaction: ButtonInteraction) {
         const [category, action] = interaction.customId.split(".");
 
-        if (category !== "applications" || action !== "skillapprove") {
+        if (category !== "applications" || action !== "skilldecline") {
             return this.none();
         }
 
@@ -75,25 +75,9 @@ export default class extends InteractionHandler {
             });
         }
 
-        // Add Role
-        const selectedMember = interaction.guild?.members.cache.find(
-            (u) => u.id === fetchedApplication.author_id
-        );
-        const selectedRole = interaction.guild?.roles.cache.find(
-            (r) => r.name === fetchedApplication.app_role
-        );
-        if (!selectedMember || !selectedRole) {
-            return await interaction.editReply({
-                content: "Could not find specified **Member** or **Role**.",
-                components: [],
-            });
-        }
-
-        await selectedMember.roles.add(selectedRole);
-
         // Set Application Status
         await fetchedApplication.updateOne({
-            app_status: "Approved",
+            app_status: "Declined",
             app_reviewer: interaction.user.id,
         });
 
