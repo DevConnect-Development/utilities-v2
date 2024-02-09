@@ -42,7 +42,7 @@ export default class extends InteractionHandler {
 
         // Skill Applications Channel
         const skillAppLogs = await ChannelConfig.findOne({
-            guild_id: globalConfig.communityGuild,
+            guild_id: globalConfig.staffGuild,
             channel_key: "skill_logs",
         });
         const skillAppLogsChannel = this.container.client.channels.cache.find(

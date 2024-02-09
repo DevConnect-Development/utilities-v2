@@ -77,6 +77,7 @@ export default class extends InteractionHandler {
         // Check If Already Pending
         const existingApplication = await SkillApplications.exists({
             app_status: "Pending",
+            app_role: fetchedApplication.app_role,
             author_id: interaction.user.id,
         });
         if (existingApplication) {
