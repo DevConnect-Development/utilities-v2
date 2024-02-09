@@ -1,4 +1,6 @@
 // Dependencies
+import { returnButton } from "../../../../util/Services/ApplicationService/index.js";
+
 import {
     InteractionHandler,
     InteractionHandlerTypes,
@@ -38,14 +40,18 @@ export default class extends InteractionHandler {
         // Variables
         const applicationID = interaction.customId.split(".")[2];
 
+        // Components
+        const createdReturnButton = await returnButton();
+
         // Fetch Application
         const fetchedApplication = await SkillApplications.findOne({
             app_id: applicationID,
         });
         if (!fetchedApplication) {
             return await interaction.update({
-                content: "Interaction has failed.",
-                components: [],
+                content: "Failed to fetch application.",
+                components: [createdReturnButton.components],
+                embeds: [],
             });
         }
 

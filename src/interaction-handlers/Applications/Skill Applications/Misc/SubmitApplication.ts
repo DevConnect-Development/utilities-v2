@@ -1,5 +1,5 @@
 // Dependencies
-import { resetSkillStaffEmbed } from "../../../../util/Services/ApplicationService/index.js";
+import { returnButton, resetSkillStaffEmbed } from "../../../../util/Services/ApplicationService/index.js";
 
 import {
     InteractionHandler,
@@ -44,13 +44,7 @@ export default class extends InteractionHandler {
         const applicationID = interaction.customId.split(".")[2];
 
         // Components
-        const returnButton = new ButtonBuilder()
-            .setCustomId("applications.skillapply")
-            .setLabel("Return")
-            .setStyle(ButtonStyle.Danger);
-        const returnAR = new ActionRowBuilder<ButtonBuilder>().addComponents(
-            returnButton
-        );
+        const createdReturnButton = await returnButton()
 
         // Fetch Application
         const fetchedApplication = await SkillApplications.findOne({
@@ -59,7 +53,7 @@ export default class extends InteractionHandler {
         if (!fetchedApplication) {
             return await interaction.editReply({
                 content: "Failed to fetch application.",
-                components: [returnAR],
+                components: [createdReturnButton.components],
                 embeds: [],
             });
         }
@@ -73,7 +67,7 @@ export default class extends InteractionHandler {
             return await interaction.editReply({
                 content:
                     "You are unable to submit this application as you already have a pending one for the same role.",
-                components: [returnAR],
+                components: [createdReturnButton.components],
                 embeds: [],
             });
         }
@@ -85,7 +79,7 @@ export default class extends InteractionHandler {
         if (!createEmbed) {
             return await interaction.editReply({
                 content: "Interaction has failed.",
-                components: [returnAR],
+                components: [createdReturnButton.components],
                 embeds: [],
             });
         }
@@ -95,7 +89,7 @@ export default class extends InteractionHandler {
             app_status: "Pending",
         });
 
-        // Return Reply
+        // Update Message
         await interaction.editReply({
             content: "Skill Application successfully submitted.",
             components: [],

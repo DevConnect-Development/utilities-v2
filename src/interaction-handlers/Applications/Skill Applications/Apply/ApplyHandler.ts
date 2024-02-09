@@ -1,5 +1,8 @@
 // Dependencies
-import { resetSkillPreview } from "../../../../util/Services/ApplicationService/index.js";
+import {
+    returnButton,
+    resetSkillPreview,
+} from "../../../../util/Services/ApplicationService/index.js";
 
 import {
     InteractionHandler,
@@ -48,12 +51,16 @@ export default class extends InteractionHandler {
             });
         }
 
+        // Components
+        const createdReturnButton = await returnButton();
+
         // Fetch Embed
         const createEmbed = await resetSkillPreview(currentApplication.app_id);
         if (!createEmbed) {
             return await interaction.editReply({
                 content: "Interaction has failed.",
-                components: [],
+                components: [createdReturnButton.components],
+                embeds: [],
             });
         }
 

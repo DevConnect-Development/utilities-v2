@@ -1,5 +1,8 @@
 // Dependencies
-import { resetSkillPreview } from "../../../../util/Services/ApplicationService/index.js";
+import {
+    returnButton,
+    resetSkillPreview,
+} from "../../../../util/Services/ApplicationService/index.js";
 
 import {
     InteractionHandler,
@@ -41,14 +44,18 @@ export default class extends InteractionHandler {
         const applicationPastWork =
             interaction.fields.getTextInputValue("workexamples");
 
+        // Components
+        const createdReturnButton = await returnButton();
+
         // Fetch Application
         const fetchedApplication = await SkillApplications.findOne({
             app_id: applicationID,
         });
         if (!fetchedApplication) {
             return await interaction.editReply({
-                content: "Interaction has failed.",
-                components: [],
+                content: "Failed to fetch application.",
+                components: [createdReturnButton.components],
+                embeds: [],
             });
         }
 
@@ -66,7 +73,8 @@ export default class extends InteractionHandler {
         if (!createEmbed) {
             return await interaction.editReply({
                 content: "Interaction has failed.",
-                components: [],
+                components: [createdReturnButton.components],
+                embeds: [],
             });
         }
 
