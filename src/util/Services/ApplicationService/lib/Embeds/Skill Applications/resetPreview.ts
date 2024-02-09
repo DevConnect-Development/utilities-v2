@@ -87,7 +87,7 @@ export default async function (applicationID: String) {
             }
         )
         .setFooter({
-            text: `Application ID: <DRAFT>`,
+            text: `ID: <DRAFT>`,
         });
 
     // Optional Fields

@@ -1,9 +1,6 @@
 // Dependencies
 import globalConfig from "../../../../config.js";
-import {
-    returnButton,
-    resetSkillStaffEmbed,
-} from "../../../../util/Services/ApplicationService/index.js";
+import { resetSkillLogEmbed } from "../../../../util/Services/ApplicationService/index.js";
 
 import {
     InteractionHandler,
@@ -29,7 +26,7 @@ export default class extends InteractionHandler {
     parse(interaction: ButtonInteraction) {
         const [category, action] = interaction.customId.split(".");
 
-        if (category !== "applications" || action !== "skillsubmit") {
+        if (category !== "applications" || action !== "skillapprove") {
             return this.none();
         }
 
@@ -43,22 +40,18 @@ export default class extends InteractionHandler {
         // Variables
         const applicationID = interaction.customId.split(".")[2];
 
-        // Components
-        const createdReturnButton = await returnButton();
-
         // Skill Applications Channel
-        const skillApps = await ChannelConfig.findOne({
+        const skillAppLogs = await ChannelConfig.findOne({
             guild_id: globalConfig.communityGuild,
-            channel_key: "skill_applications",
+            channel_key: "skill_logs",
         });
-        const skillAppsChannel = this.container.client.channels.cache.find(
-            (c) => c.id === skillApps?.channel_id
+        const skillAppLogsChannel = this.container.client.channels.cache.find(
+            (c) => c.id === skillAppLogs?.channel_id
         ) as TextChannel;
-        if (!skillApps || !skillAppsChannel) {
+        if (!skillAppLogs || !skillAppLogsChannel) {
             return await interaction.editReply({
                 content: "Interaction has failed.",
-                components: [createdReturnButton.components],
-                embeds: [],
+                components: [],
             });
         }
 
@@ -69,53 +62,46 @@ export default class extends InteractionHandler {
         if (!fetchedApplication) {
             return await interaction.editReply({
                 content: "Failed to fetch application.",
-                components: [createdReturnButton.components],
-                embeds: [],
-            });
-        }
-
-        // Check If Already Pending
-        const existingApplication = await SkillApplications.exists({
-            app_status: "Pending",
-            author_id: interaction.user.id,
-        });
-        if (existingApplication) {
-            return await interaction.editReply({
-                content:
-                    "You are unable to submit this application as you already have a pending one for the same role.",
-                components: [createdReturnButton.components],
-                embeds: [],
+                components: [],
             });
         }
 
         // Fetch Embed
-        const createEmbed = await resetSkillStaffEmbed(
-            fetchedApplication.app_id
-        );
+        const createEmbed = await resetSkillLogEmbed(fetchedApplication.app_id);
         if (!createEmbed) {
             return await interaction.editReply({
                 content: "Interaction has failed.",
-                components: [createdReturnButton.components],
-                embeds: [],
+                components: [],
             });
         }
 
+        // Add Role
+        const selectedMember = interaction.guild?.members.cache.find(
+            (u) => u.id === fetchedApplication.author_id
+        );
+        const selectedRole = interaction.guild?.roles.cache.find(
+            (r) => r.name === fetchedApplication.app_role
+        );
+        if (!selectedMember || !selectedRole) {
+            return await interaction.editReply({
+                content: "Could not find specified **Member** or **Role**.",
+                components: [],
+            });
+        }
+
+        await selectedMember.roles.add(selectedRole);
+
         // Set Application Status
         await fetchedApplication.updateOne({
-            app_status: "Pending",
+            app_status: "Approved",
         });
 
-        // Send Staff Embed
-        await skillAppsChannel.send({
+        // Send Log Embed
+        await skillAppLogsChannel.send({
             embeds: createEmbed.embeds,
-            components: createEmbed.components,
         });
 
-        // Update Message
-        await interaction.editReply({
-            content: "Skill Application successfully submitted.",
-            components: [],
-            embeds: [],
-        });
+        // Delete Message
+        await interaction.deleteReply();
     }
 }

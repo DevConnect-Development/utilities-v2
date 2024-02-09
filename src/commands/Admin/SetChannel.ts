@@ -109,6 +109,10 @@ export default class extends Subcommand {
                                         {
                                             name: "Moderation Logs",
                                             value: "moderation_logs",
+                                        },
+                                        {
+                                            name: "Skill Application Logs",
+                                            value: "skill_logs",
                                         }
                                     )
                                     .setRequired(true)
