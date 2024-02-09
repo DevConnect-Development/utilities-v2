@@ -1,11 +1,12 @@
 // Dependencies
-import globalConfig from "../../../config.js";
+import globalConfig from "../../config.js";
 
 import { Command } from "@sapphire/framework";
+import { Subcommand } from "@sapphire/plugin-subcommands";
 import { PermissionFlagsBits, EmbedBuilder } from "discord.js";
 
 // Schemas
-import PayrollAmount from "../../../util/schemas/Staff/PayrollAmount.js";
+import PayrollAmount from "../../util/schemas/Staff/PayrollAmount.js";
 
 // Formatter
 const usdFormatter = new Intl.NumberFormat("en-US", {
@@ -14,25 +15,74 @@ const usdFormatter = new Intl.NumberFormat("en-US", {
 });
 
 // Command
-export default class extends Command {
-    constructor(context: Command.LoaderContext, options: Command.Options) {
+export default class extends Subcommand {
+    constructor(
+        context: Subcommand.LoaderContext,
+        options: Subcommand.Options
+    ) {
         super(context, {
             ...options,
+            subcommands: [
+                {
+                    name: "balance",
+                    chatInputRun: "setBalance",
+                },
+                {
+                    name: "role",
+                    chatInputRun: "setRole",
+                },
+            ],
         });
     }
 
-    registerApplicationCommands(registry: Command.Registry) {
+    registerApplicationCommands(registry: Subcommand.Registry) {
         registry.registerChatInputCommand(
             (builder) => {
                 builder
-                    .setName("payroll")
-                    .setDescription("Check your payroll balance.")
+                    .setName("setpayroll")
+                    .setDescription("Payroll-related commands.")
                     .addSubcommand((command) =>
                         command
                             .setName("balance")
-                            .setDescription(
-                                "Check your Payroll as a DC Staff Member."
+                            .setDescription("Set a user's Payroll balance.")
+                            .addUserOption((option) =>
+                                option
+                                    .setName("user")
+                                    .setDescription(
+                                        "The Staff Member you'd like to set the payroll amount of."
+                                    )
+                                    .setRequired(true)
                             )
+                            .addNumberOption((option) =>
+                                option
+                                    .setName("balance")
+                                    .setDescription(
+                                        "The balance to change it to."
+                                    )
+                                    .setRequired(true)
+                            )
+                    )
+                    .addSubcommand((command) =>
+                        command
+                            .setName("role")
+                            .setDescription("Set a user's role.")
+                            .addUserOption((option) =>
+                                option
+                                    .setName("user")
+                                    .setDescription(
+                                        "The Staff Member you'd like to set the role of."
+                                    )
+                                    .setRequired(true)
+                            )
+                            .addStringOption((option) =>
+                                option
+                                    .setName("role")
+                                    .setDescription("The role to change it to.")
+                                    .setRequired(true)
+                            )
+                    )
+                    .setDefaultMemberPermissions(
+                        PermissionFlagsBits.Administrator
                     );
             },
             {
@@ -41,64 +91,7 @@ export default class extends Command {
         );
     }
 
-    async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-        // Defer Reply
-        await interaction.deferReply({
-            ephemeral: true,
-        });
-
-        // Variables
-        let currentPayroll = await PayrollAmount.findOne({
-            user_id: interaction.user.id,
-        });
-
-        // Payroll Validity Check
-        if (!currentPayroll) {
-            currentPayroll = await PayrollAmount.create({
-                user_id: interaction.user.id,
-                current_role: "",
-
-                usd_amount: "0",
-            });
-        }
-
-        // Payroll Number Check
-        const payrollAsNumber = currentPayroll.usd_amount as unknown as number;
-        if (isNaN(payrollAsNumber)) {
-            return interaction.editReply("Interaction has failed.");
-        }
-        const formattedUsdAmount = usdFormatter.format(payrollAsNumber);
-
-        // Payroll Embed
-        const payrollEmbed = new EmbedBuilder()
-            .setAuthor({
-                iconURL: interaction.user.displayAvatarURL(),
-                name: `${interaction.user.username} ${
-                    currentPayroll.current_role
-                        ? `(${currentPayroll.current_role})`
-                        : ""
-                }`,
-            })
-            .setColor("#44f9fa")
-            .setDescription(`> \`${formattedUsdAmount}\``)
-            .setTimestamp();
-
-        // Return Response
-        return await interaction.editReply({
-            embeds: [payrollEmbed],
-        });
-    }
-
     public async setBalance(interaction: Command.ChatInputCommandInteraction) {
-        // Permissions Check
-        if (
-            !interaction.memberPermissions?.has(
-                PermissionFlagsBits.Administrator
-            )
-        ) {
-            return;
-        }
-
         // Defer Reply
         await interaction.deferReply({
             ephemeral: true,
@@ -168,15 +161,6 @@ export default class extends Command {
     }
 
     public async setRole(interaction: Command.ChatInputCommandInteraction) {
-        // Permissions Check
-        if (
-            !interaction.memberPermissions?.has(
-                PermissionFlagsBits.Administrator
-            )
-        ) {
-            return;
-        }
-
         // Defer Reply
         await interaction.deferReply({
             ephemeral: true,
