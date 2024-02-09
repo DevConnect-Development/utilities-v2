@@ -78,9 +78,7 @@ export default class extends Subcommand {
     }
 
     public async roleAll(interaction: Subcommand.ChatInputCommandInteraction) {
-        await interaction.deferReply({
-            ephemeral: true,
-        });
+        await interaction.deferReply();
 
         // Variables
         const currentTimestamp = moment().unix();
@@ -145,9 +143,7 @@ export default class extends Subcommand {
     public async removeAll(
         interaction: Subcommand.ChatInputCommandInteraction
     ) {
-        await interaction.deferReply({
-            ephemeral: true,
-        });
+        await interaction.deferReply();
 
         // Variables
         const currentTimestamp = moment().unix();
