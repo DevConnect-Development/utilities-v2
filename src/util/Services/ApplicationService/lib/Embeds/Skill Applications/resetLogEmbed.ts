@@ -24,7 +24,10 @@ export default async function (applicationID: String) {
 
     // Embed
     const mainEmbed = new EmbedBuilder()
-        .setTitle(`Skill Application - ${fetchedApplication.app_role}`)
+        .setTitle(`Skill Application - ${fetchedApplication.app_role} (**${fetchedApplication.app_status?.toUpperCase()}**)`)
+        .setColor(
+            fetchedApplication.app_status === "Approved" ? "Green" : "Red"
+        )
         .addFields(
             {
                 name: "Author",
@@ -53,13 +56,6 @@ export default async function (applicationID: String) {
             value: fetchedApplication.provided_comment,
             inline: false,
         });
-    }
-
-    // Color Change
-    if (fetchedApplication.app_status === "Approved") {
-        await mainEmbed.setColor("Green");
-    } else if (fetchedApplication.app_status === "Declined") {
-        await mainEmbed.setColor("Red");
     }
 
     // Return Embed
