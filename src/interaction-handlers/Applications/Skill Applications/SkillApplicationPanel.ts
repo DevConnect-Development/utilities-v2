@@ -46,7 +46,8 @@ export default class extends InteractionHandler {
         const viewButton = new ButtonBuilder()
             .setCustomId("applications.skillview")
             .setLabel("View Applications")
-            .setStyle(ButtonStyle.Secondary);
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(true);
         const gobackButton = new ButtonBuilder()
             .setCustomId("applications.resetpanel")
             .setLabel("Go Back")
@@ -55,16 +56,17 @@ export default class extends InteractionHandler {
             applyButton,
             viewButton
         );
-        const gobackAR = new ActionRowBuilder<ButtonBuilder>()
-            .addComponents(gobackButton)
+        const gobackAR = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            gobackButton
+        );
 
         // Existing Application
         const existingApplication = await SkillApplications.findOne({
             app_status: "Draft",
             author_id: interaction.user.id,
-        })
-        if(existingApplication) {
-            applyButton.setLabel("Edit Draft")
+        });
+        if (existingApplication) {
+            applyButton.setLabel("Edit Draft");
         }
 
         // Update Reply

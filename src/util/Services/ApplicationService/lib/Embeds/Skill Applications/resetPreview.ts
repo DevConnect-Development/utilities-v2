@@ -55,7 +55,15 @@ export default async function (applicationID: String) {
             new StringSelectMenuOptionBuilder()
                 .setLabel("Graphics Artist")
                 .setValue("Graphics Artist")
-                .setDefault(selectedRole === "Graphics Artist" ? true : false)
+                .setDefault(selectedRole === "Graphics Artist" ? true : false),
+            new StringSelectMenuOptionBuilder()
+                .setLabel("Animator")
+                .setValue("Animator")
+                .setDefault(selectedRole === "Animator" ? true : false),
+            new StringSelectMenuOptionBuilder()
+                .setLabel("VFX Artist")
+                .setValue("VFX Artist")
+                .setDefault(selectedRole === "VFX Artist" ? true : false)
         );
 
     const selectCategoryAR =

@@ -25,9 +25,9 @@ export default async function (applicationID: String) {
     // Embed
     const mainEmbed = new EmbedBuilder()
         .setTitle(
-            `Skill Application - ${
+            `(**${fetchedApplication.app_status?.toUpperCase()}**) - ${
                 fetchedApplication.app_role
-            } (**${fetchedApplication.app_status?.toUpperCase()}**)`
+            } Application `
         )
         .addFields(
             {
