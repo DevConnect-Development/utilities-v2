@@ -1,3 +1,4 @@
 export { default as createPanel } from "./lib/createPanel.js";
 
-export { default as resetSkillPreview } from "./lib/Embeds/resetSkillPreview.js";
+export { default as resetSkillPreview } from "./lib/Embeds/Skill Applications/resetPreview.js";
+export { default as resetSkillStaffEmbed } from "./lib/Embeds/Skill Applications/resetStaffEmbed.js";

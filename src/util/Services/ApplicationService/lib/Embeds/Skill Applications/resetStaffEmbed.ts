@@ -1,0 +1,124 @@
+// Dependencies
+import {
+    EmbedBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    StringSelectMenuBuilder,
+    StringSelectMenuOptionBuilder,
+    ActionRowBuilder,
+} from "discord.js";
+
+// Schemas
+import SkillApplications from "../../../../../schemas/Apps/SkillApplications.js";
+
+export default async function (applicationID: String) {
+    // Fetch Ticket
+    const fetchedApplication = await SkillApplications.findOne({
+        app_id: applicationID,
+    });
+
+    // Exists Check
+    if (!fetchedApplication) {
+        return undefined;
+    }
+
+    // Variables
+    const outstandingIssues: Array<String> = [];
+    const selectedRole = fetchedApplication.app_role;
+
+    // Components
+    const editButton = new ButtonBuilder()
+        .setCustomId(`applications.skilledit.${fetchedApplication.app_id}`)
+        .setLabel("Edit Application");
+    const submitButton = new ButtonBuilder()
+        .setCustomId(`applications.skillsubmit.${fetchedApplication.app_id}`)
+        .setLabel("Submit")
+        .setStyle(ButtonStyle.Primary);
+
+    const selectCategory = new StringSelectMenuBuilder()
+        .setCustomId(
+            `applications.skillselectrole.${fetchedApplication.app_id}`
+        )
+        .setOptions(
+            new StringSelectMenuOptionBuilder()
+                .setLabel("Scripter")
+                .setValue("Scripter")
+                .setDefault(selectedRole === "Scripter" ? true : false),
+            new StringSelectMenuOptionBuilder()
+                .setLabel("Builder")
+                .setValue("Builder")
+                .setDefault(selectedRole === "Builder" ? true : false),
+            new StringSelectMenuOptionBuilder()
+                .setLabel("Modeler")
+                .setValue("Modeler")
+                .setDefault(selectedRole === "Modeler" ? true : false),
+            new StringSelectMenuOptionBuilder()
+                .setLabel("Graphics Artist")
+                .setValue("Graphics Artist")
+                .setDefault(selectedRole === "Graphics Artist" ? true : false)
+        );
+
+    const selectCategoryAR =
+        new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+            selectCategory
+        );
+
+    const editAR = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        editButton,
+        submitButton
+    );
+
+    // Embed
+    const mainEmbed = new EmbedBuilder()
+        .setTitle(`Skill Application - ${fetchedApplication.app_role}`)
+        .addFields(
+            {
+                name: "Author",
+                value: `<@${fetchedApplication.author_id}> (${fetchedApplication.author_id})`,
+                inline: true,
+            },
+            {
+                name: "Work Examples",
+                value:
+                    fetchedApplication.provided_work.length > 0
+                        ? fetchedApplication.provided_work.join("\n")
+                        : "No Work Provided",
+                inline: true,
+            }
+        )
+        .setFooter({
+            text: `Application ID: <DRAFT>`,
+        });
+
+    // Optional Fields
+    if (fetchedApplication.provided_comment) {
+        mainEmbed.addFields({
+            name: "Additional Comment",
+            value: fetchedApplication.provided_comment,
+            inline: false,
+        });
+    }
+
+    // Additional Checks
+    if (fetchedApplication.provided_work.length < 1) {
+        outstandingIssues.push("Missing Provided Work.");
+    }
+
+    // Button Checks
+    if (outstandingIssues.length > 0) {
+        editButton.setStyle(ButtonStyle.Danger);
+        editButton.setLabel(
+            `Edit Application (${outstandingIssues.length} Missing)`
+        );
+        submitButton.setDisabled(true);
+    } else {
+        editButton.setStyle(ButtonStyle.Success);
+        submitButton.setDisabled(false);
+    }
+
+    // Return Embed
+    return {
+        embeds: [mainEmbed],
+        components: [selectCategoryAR, editAR],
+    };
+}
