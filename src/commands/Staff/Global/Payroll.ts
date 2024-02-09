@@ -26,14 +26,7 @@ export default class extends Command {
             (builder) => {
                 builder
                     .setName("payroll")
-                    .setDescription("Check your payroll balance.")
-                    .addSubcommand((command) =>
-                        command
-                            .setName("balance")
-                            .setDescription(
-                                "Check your Payroll as a DC Staff Member."
-                            )
-                    );
+                    .setDescription("Check your payroll balance.");
             },
             {
                 guildIds: [globalConfig.staffGuild],
