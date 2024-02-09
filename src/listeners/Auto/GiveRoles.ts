@@ -22,7 +22,10 @@ export default class extends Listener {
         );
 
         // Dividers
-        const membersDivider = member.guild.roles.cache.find(
+        const skillsDivider = member.guild.roles.cache.find(
+            (r) => r.id === "1205472641704792084"
+        );
+        const miscDivider = member.guild.roles.cache.find(
             (r) => r.id === "1162998861799903256"
         );
         const optionalDivider = member.guild.roles.cache.find(
@@ -30,13 +33,14 @@ export default class extends Listener {
         );
 
         // Check
-        if (!memberRole || !membersDivider || !optionalDivider) {
+        if (!memberRole || !skillsDivider || !miscDivider || !optionalDivider) {
             return;
         }
 
         // Give Role
         await member.roles.add(memberRole);
-        await member.roles.add(membersDivider);
+        await member.roles.add(skillsDivider);
+        await member.roles.add(miscDivider);
         await member.roles.add(optionalDivider);
     }
 }
