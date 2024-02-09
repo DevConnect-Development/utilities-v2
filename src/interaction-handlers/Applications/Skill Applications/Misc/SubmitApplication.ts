@@ -1,5 +1,9 @@
 // Dependencies
-import { returnButton, resetSkillStaffEmbed } from "../../../../util/Services/ApplicationService/index.js";
+import globalConfig from "../../../../config.js";
+import {
+    returnButton,
+    resetSkillStaffEmbed,
+} from "../../../../util/Services/ApplicationService/index.js";
 
 import {
     InteractionHandler,
@@ -7,12 +11,11 @@ import {
 } from "@sapphire/framework";
 import {
     ButtonInteraction,
-    ButtonBuilder,
-    ButtonStyle,
-    ActionRowBuilder,
+    TextChannel
 } from "discord.js";
 
 // Schemas
+import ChannelConfig from "../../../../util/schemas/Config/ChannelConfig.js";
 import SkillApplications from "../../../../util/schemas/Apps/SkillApplications.js";
 
 export default class extends InteractionHandler {
@@ -44,7 +47,23 @@ export default class extends InteractionHandler {
         const applicationID = interaction.customId.split(".")[2];
 
         // Components
-        const createdReturnButton = await returnButton()
+        const createdReturnButton = await returnButton();
+
+        // Skill Applications Channel
+        const skillApps = await ChannelConfig.findOne({
+            guild_id: globalConfig.communityGuild,
+            channel_key: "skill_applications",
+        });
+        const skillAppsChannel = this.container.client.channels.cache.find(
+            (c) => c.id === skillApps?.channel_id
+        ) as TextChannel;
+        if(!skillApps || !skillAppsChannel)  {
+            return await interaction.editReply({
+                content: "Interaction has failed.",
+                components: [createdReturnButton.components],
+                embeds: [],
+            });
+        }
 
         // Fetch Application
         const fetchedApplication = await SkillApplications.findOne({
@@ -88,6 +107,11 @@ export default class extends InteractionHandler {
         await fetchedApplication.updateOne({
             app_status: "Pending",
         });
+
+        // Send Staff Embed
+        await skillAppsChannel.send({
+            embeds: createEmbed.embeds
+        })
 
         // Update Message
         await interaction.editReply({
