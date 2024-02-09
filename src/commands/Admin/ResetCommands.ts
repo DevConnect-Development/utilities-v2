@@ -46,7 +46,11 @@ export default class extends Subcommand {
                     );
             },
             {
-                guildIds: [globalConfig.developmentGuild],
+                guildIds: [
+                    globalConfig.communityGuild,
+                    globalConfig.staffGuild,
+                    globalConfig.developmentGuild,
+                ],
             }
         );
     }
