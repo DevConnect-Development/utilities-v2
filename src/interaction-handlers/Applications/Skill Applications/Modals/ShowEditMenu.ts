@@ -72,8 +72,8 @@ export default class extends InteractionHandler {
             .setRequired(false);
         const workExamplesField = new TextInputBuilder()
             .setCustomId("workexamples")
-            .setLabel("Work Examples")
-            .setPlaceholder("Separate new work with new lines.")
+            .setLabel("❗ Work Examples")
+            .setPlaceholder("Separate new work with new lines. (MAX 3)")
             .setStyle(TextInputStyle.Paragraph)
             .setMaxLength(600)
             .setRequired(false);

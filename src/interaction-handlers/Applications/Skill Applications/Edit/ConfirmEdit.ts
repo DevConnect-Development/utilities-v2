@@ -67,7 +67,7 @@ export default class extends InteractionHandler {
         const filteredPastWork = []
 
         for (const example of cleanPastWork) {
-            if(validator.isURL(example) && cleanPastWork.length < 4) {
+            if(validator.isURL(example) && filteredPastWork.length < 4) {
                 filteredPastWork.push(example)
             }
         }
