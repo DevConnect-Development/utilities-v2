@@ -67,8 +67,8 @@ export default class extends InteractionHandler {
         // Preview Instructions
         const previewInstructions = [
             "Below is a preview of your Skill Role Application.",
-            "You are able to edit it and provide the required information, along with reviewing it before sending it to Application Readers.",
             "",
+            "You are able to edit it and provide the required information, along with reviewing it before sending it to Application Readers.",
             "If you ever need assistance, feel free to contact an Application Reader.",
         ].join("\n");
 

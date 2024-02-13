@@ -21,7 +21,7 @@ export default {
 
         "artstation.com",
         "www.artstation.com",
-        
+
         "deviantart.com",
         "www.deviantart.com",
 
@@ -29,6 +29,12 @@ export default {
         "www.discord.com",
 
         "youtube.com",
-        "www.youtube.com"
+        "www.youtube.com",
+
+        "twitter.com",
+        "www.twitter.com",
+        
+        "x.com",
+        "www.x.com",
     ]
 };
