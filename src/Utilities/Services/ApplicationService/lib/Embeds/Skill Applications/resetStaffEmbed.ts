@@ -1,4 +1,7 @@
 // Dependencies
+import globalConfig from "@config";
+import GetBaseURL from "@modules/Functions/GetBaseURL";
+
 import {
     EmbedBuilder,
     ButtonBuilder,
@@ -21,6 +24,7 @@ export default async function (applicationID: String) {
     }
 
     // Variables
+    const filteredPastWork = [];
 
     // Components
     const approveButton = new ButtonBuilder()
@@ -36,6 +40,20 @@ export default async function (applicationID: String) {
         declineButton
     );
 
+    // Sort Past Work
+    for (const example of fetchedApplication.provided_work) {
+        const baseURL = GetBaseURL(example);
+        if (baseURL) {
+            const isVerified = globalConfig.verifiedURLS.includes(baseURL);
+
+            filteredPastWork.push(
+                `[${baseURL}](${example}) ${
+                    !isVerified ? "(**URL NOT VERIFIED**)" : ""
+                }`
+            );
+        }
+    }
+
     // Embed
     const mainEmbed = new EmbedBuilder()
         .setTitle(`Skill Application - ${fetchedApplication.app_role}`)
@@ -48,8 +66,8 @@ export default async function (applicationID: String) {
             {
                 name: "Work Examples",
                 value:
-                    fetchedApplication.provided_work.length > 0
-                        ? fetchedApplication.provided_work.join("\n")
+                filteredPastWork.length > 0
+                        ? filteredPastWork.join("\n")
                         : "No Work Provided",
                 inline: true,
             }

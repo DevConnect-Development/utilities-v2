@@ -12,5 +12,16 @@ export default {
     clientID: `${process.env.CLIENT_ID}`,
     
     roverToken: `${process.env.ROVER_KEY}`,
-    databaseString: `${process.env.MONGO_URL}`
+    databaseString: `${process.env.MONGO_URL}`,
+
+    verifiedURLS: [
+        "roblox.com",
+        "devforum.roblox.com",
+
+        "artstation.com",
+        "deviantart.com",
+
+        "discord.com",
+        "youtube.com"
+    ]
 };

@@ -1,4 +1,7 @@
 // Dependencies
+import globalConfig from "@config";
+import GetBaseURL from "@modules/Functions/GetBaseURL";
+
 import { container } from "@sapphire/framework";
 import { EmbedBuilder } from "discord.js";
 
@@ -17,9 +20,24 @@ export default async function (applicationID: String) {
     }
 
     // Variables
+    const filteredPastWork = [];
     const appReviewer = container.client.users.cache.find(
         (u) => u.id === fetchedApplication.app_reviewer
     );
+
+    // Sort Past Work
+    for (const example of fetchedApplication.provided_work) {
+        const baseURL = GetBaseURL(example);
+        if (baseURL) {
+            const isVerified = globalConfig.verifiedURLS.includes(baseURL);
+
+            filteredPastWork.push(
+                `[${baseURL}](${example}) ${
+                    !isVerified ? "(**URL NOT VERIFIED**)" : ""
+                }`
+            );
+        }
+    }
 
     // Embed
     const mainEmbed = new EmbedBuilder()
@@ -37,8 +55,8 @@ export default async function (applicationID: String) {
             {
                 name: "Work Examples",
                 value:
-                    fetchedApplication.provided_work.length > 0
-                        ? fetchedApplication.provided_work.join("\n")
+                    filteredPastWork.length > 0
+                        ? filteredPastWork.join("\n")
                         : "No Work Provided",
                 inline: true,
             }
