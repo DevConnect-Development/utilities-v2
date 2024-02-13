@@ -1,5 +1,5 @@
 // Dependencies
-import { returnButton } from "@services/ApplicationService/index";
+import { returnButton } from "@services/ApplicationService";
 
 import {
     InteractionHandler,

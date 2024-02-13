@@ -1,5 +1,5 @@
 // Dependencies
-import { databaseConnect } from "@modules/mongodb";
+import { databaseConnect } from "@modules/DB/HandleMongo";
 import botClient from "@/class/client";
 
 // Create Client

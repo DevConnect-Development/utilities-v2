@@ -1,6 +1,6 @@
 // Dependencies
 import globalConfig from "@config";
-import removeQueries from "@modules/removeQueries";
+import removeQueries from "@modules/Functions/RemoveURLQueries";
 
 import { Listener } from "@sapphire/framework";
 import { Message, TextChannel, EmbedBuilder } from "discord.js";

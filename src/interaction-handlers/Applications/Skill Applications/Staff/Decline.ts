@@ -1,6 +1,6 @@
 // Dependencies
 import globalConfig from "@config";
-import { resetSkillLogEmbed } from "@services/ApplicationService/index";
+import { resetSkillLogEmbed } from "@services/ApplicationService";
 
 import {
     InteractionHandler,

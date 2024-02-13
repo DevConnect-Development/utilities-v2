@@ -36,22 +36,22 @@ export default class extends Listener {
         const currentAuthor = reaction.message.author! as User;
 
         // Creations Channel
-        const creationsChannel = await ChannelConfig.findOne({
+        const creationsKey = await ChannelConfig.findOne({
             guild_id: globalConfig.communityGuild,
             channel_key: "creations",
         });
 
         // Best Creations
-        const bestCreationsC = await ChannelConfig.findOne({
+        const bestCreationsKey = await ChannelConfig.findOne({
             guild_id: globalConfig.communityGuild,
             channel_key: "best_creations",
         });
         const bestCreationsChannel = currentGuild.channels.cache.find(
-            (ch) => ch.id === bestCreationsC?.channel_id
+            (ch) => ch.id === bestCreationsKey?.channel_id
         ) as TextChannel;
 
         // Exist Check
-        if (!creationsChannel || !bestCreationsC || !bestCreationsChannel) {
+        if (!creationsKey || !bestCreationsKey || !bestCreationsChannel) {
             return;
         }
         if (await BestCreations.exists({ creation_id: reaction.message.id })) {
@@ -76,7 +76,7 @@ export default class extends Listener {
             featuredEmbed.setImage(currentMessage.attachments.first()!.url);
         }
 
-        if (reaction.message.channelId !== creationsChannel.channel_id) return; // Check Channel ID
+        if (reaction.message.channelId !== creationsKey.channel_id) return; // Check Channel ID
         if (reaction.count < minimumReactions) return; // Check Minimum Reactions
         if (reaction.emoji.name !== "⭐") return; // Check Emoji
 

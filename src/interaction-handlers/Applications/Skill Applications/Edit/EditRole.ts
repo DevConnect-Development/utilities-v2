@@ -2,7 +2,7 @@
 import {
     returnButton,
     resetSkillPreview,
-} from "@services/ApplicationService/index";
+} from "@services/ApplicationService";
 
 import {
     InteractionHandler,

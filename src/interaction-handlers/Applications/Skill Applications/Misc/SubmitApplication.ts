@@ -3,7 +3,7 @@ import globalConfig from "@config";
 import {
     returnButton,
     resetSkillStaffEmbed,
-} from "@services/ApplicationService/index";
+} from "@services/ApplicationService";
 
 import {
     InteractionHandler,

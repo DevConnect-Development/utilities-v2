@@ -1,5 +1,5 @@
 // Dependencies
-import { createPanel } from "@services/ApplicationService/index";
+import { createPanel } from "@services/ApplicationService";
 
 import {
     InteractionHandler,

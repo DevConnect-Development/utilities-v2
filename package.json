@@ -1,13 +1,13 @@
 {
     "name": "dc-utilities-v2",
-    "version": "2.2.3",
+    "version": "2.2.4",
     "main": "dist/index.js",
     "type": "module",
     "types": "src/index.d.ts",
     "private": true,
     "scripts": {
         "compile": "tsc && tsx .",
-        "dev": "tsx watch -r tsconfig-paths/register ."
+        "dev": "tsc-watch --onSuccess \"tsx .\""
     },
     "dependencies": {
         "@sapphire/discord.js-utilities": "^7.1.6",
@@ -27,7 +27,7 @@
         "typescript": "^5.3.3"
     },
     "devDependencies": {
-        "tsconfig-paths": "^4.2.0",
+        "tsc-watch": "^6.0.4",
         "tsx": "^4.7.1"
     }
 }

@@ -109,9 +109,9 @@
             "@/*": ["./src/*"],
             "@config": ["./src/config"],
 
-            "@modules/*": ["./src/util/ClientModules/*"],
-            "@schemas/*": ["./src/util/ClientSchemas/*"],
-            "@services/*": ["./src/util/ClientServices/*"]
+            "@modules/*": ["./src/Utilities/Modules/*"],
+            "@schemas/*": ["./src/Utilities/Schemas/*"],
+            "@services/*": ["./src/Utilities/Services/*"]
         }
     }
 }
