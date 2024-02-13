@@ -15,13 +15,20 @@ export default {
     databaseString: `${process.env.MONGO_URL}`,
 
     verifiedURLS: [
-        "roblox.com",
+        "www.roblox.com",
+        "web.roblox.com",
         "devforum.roblox.com",
 
         "artstation.com",
+        "www.artstation.com",
+        
         "deviantart.com",
+        "www.deviantart.com",
 
         "discord.com",
-        "youtube.com"
+        "www.discord.com",
+
+        "youtube.com",
+        "www.youtube.com"
     ]
 };

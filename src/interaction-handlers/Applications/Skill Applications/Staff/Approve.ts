@@ -81,6 +81,15 @@ export default class extends InteractionHandler {
         }
 
         await selectedMember.roles.add(selectedRole);
+        await selectedMember
+            .send(
+                `Your **Skill Role Application** for \`${fetchedApplication.app_role}\` has been approved.`
+            )
+            .catch((e) => {
+                console.log(
+                    `Failed to send Skill Role Application message to @${selectedMember.user.username} (${selectedMember.id})`
+                );
+            });
 
         // Set Application Status
         await fetchedApplication.updateOne({

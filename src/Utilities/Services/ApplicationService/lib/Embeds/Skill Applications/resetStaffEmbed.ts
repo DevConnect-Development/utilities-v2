@@ -48,7 +48,7 @@ export default async function (applicationID: String) {
 
             filteredPastWork.push(
                 `[${baseURL}](${example}) ${
-                    !isVerified ? "(**URL NOT VERIFIED**)" : ""
+                    !isVerified ? "(**⚠️**)" : ""
                 }`
             );
         }

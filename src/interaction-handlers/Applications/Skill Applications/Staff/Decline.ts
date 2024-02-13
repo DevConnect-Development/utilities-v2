@@ -66,6 +66,30 @@ export default class extends InteractionHandler {
             });
         }
 
+        // Send Message
+        const selectedMember = interaction.guild?.members.cache.find(
+            (u) => u.id === fetchedApplication.author_id
+        );
+        if (!selectedMember) {
+            return await interaction.editReply({
+                content: "Could not find specified **Member**.",
+                components: [],
+            });
+        }
+
+        await selectedMember
+            .send(
+                [
+                    `Your **Skill Role Application** for \`${fetchedApplication.app_role}\` has been declined.`,
+                    `You may contact an Application Reader for more information.`,
+                ].join("\n")
+            )
+            .catch((e) => {
+                console.log(
+                    `Failed to send Skill Role Application message to @${selectedMember.user.username} (${selectedMember.id})`
+                );
+            });
+
         // Set Application Status
         await fetchedApplication.updateOne({
             app_status: "Declined",
