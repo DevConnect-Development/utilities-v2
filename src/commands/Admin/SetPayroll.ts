@@ -1,12 +1,12 @@
 // Dependencies
-import globalConfig from "../../config.js";
+import globalConfig from "@config";
 
 import { Command } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import { PermissionFlagsBits, EmbedBuilder } from "discord.js";
 
 // Schemas
-import PayrollAmount from "../../util/schemas/Staff/PayrollAmount.js";
+import PayrollAmount from "@schemas/Staff/PayrollAmount";
 
 // Formatter
 const usdFormatter = new Intl.NumberFormat("en-US", {

@@ -1,5 +1,5 @@
 // Dependencies
-import globalConfig from "../../config.js";
+import globalConfig from "@config";
 
 import moment from "moment";
 import "moment-timezone";
@@ -15,7 +15,7 @@ import {
 } from "discord.js";
 
 // Schemas
-import channels from "../../util/schemas/Config/ChannelConfig.js";
+import channels from "@schemas/Config/ChannelConfig";
 
 // Command
 export default class extends Command {

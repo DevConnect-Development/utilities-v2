@@ -1,5 +1,5 @@
 // Dependencies
-import globalConfig from "../../config.js";
+import globalConfig from "@config";
 
 import moment from "moment";
 import { Subcommand } from "@sapphire/plugin-subcommands";

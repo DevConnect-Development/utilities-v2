@@ -1,5 +1,5 @@
 // Dependencies
-import globalConfig from "../../config.js";
+import globalConfig from "@config";
 
 import { Command } from "@sapphire/framework";
 import { Guild, GuildMember, EmbedBuilder } from "discord.js";

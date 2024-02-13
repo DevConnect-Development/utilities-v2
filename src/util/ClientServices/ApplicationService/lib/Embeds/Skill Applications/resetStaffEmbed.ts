@@ -1,10 +1,13 @@
 // Dependencies
-import { container } from "@sapphire/framework";
-
-import { EmbedBuilder } from "discord.js";
+import {
+    EmbedBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    ActionRowBuilder,
+} from "discord.js";
 
 // Schemas
-import SkillApplications from "../../../../../schemas/Apps/SkillApplications.js";
+import SkillApplications from "@schemas/Apps/SkillApplications";
 
 export default async function (applicationID: String) {
     // Fetch Ticket
@@ -18,17 +21,24 @@ export default async function (applicationID: String) {
     }
 
     // Variables
-    const appReviewer = container.client.users.cache.find(
-        (u) => u.id === fetchedApplication.app_reviewer
+
+    // Components
+    const approveButton = new ButtonBuilder()
+        .setCustomId(`applications.skillapprove.${fetchedApplication.app_id}`)
+        .setLabel("Approve")
+        .setStyle(ButtonStyle.Success);
+    const declineButton = new ButtonBuilder()
+        .setCustomId(`applications.skilldecline.${fetchedApplication.app_id}`)
+        .setLabel("Decline")
+        .setStyle(ButtonStyle.Danger);
+    const buttonsAR = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        approveButton,
+        declineButton
     );
 
     // Embed
     const mainEmbed = new EmbedBuilder()
-        .setTitle(
-            `(**${fetchedApplication.app_status?.toUpperCase()}**) - ${
-                fetchedApplication.app_role
-            } Application `
-        )
+        .setTitle(`Skill Application - ${fetchedApplication.app_role}`)
         .addFields(
             {
                 name: "Author",
@@ -45,9 +55,7 @@ export default async function (applicationID: String) {
             }
         )
         .setFooter({
-            text:
-                `ID: ${fetchedApplication.app_id}` +
-                (appReviewer ? ` • Reviewed by @${appReviewer.username}` : ""),
+            text: `ID: ${fetchedApplication.app_id}`,
         });
 
     // Optional Fields
@@ -59,16 +67,9 @@ export default async function (applicationID: String) {
         });
     }
 
-    // Set Color
-    const appStatus = fetchedApplication.app_status;
-    if (appStatus === "Approved") {
-        mainEmbed.setColor("Green");
-    } else if (appStatus === "Declined") {
-        mainEmbed.setColor("Red");
-    }
-
     // Return Embed
     return {
         embeds: [mainEmbed],
+        components: [buttonsAR],
     };
 }

@@ -1,4 +1,6 @@
 // Dependencies
+import globalConfig from "@config";
+
 import { SapphireClient } from "@sapphire/framework";
 import {
     ActivityType,
@@ -30,9 +32,9 @@ export default class extends SapphireClient {
     }
 
     async resetCommands() {
-        const rest = new REST().setToken(`${process.env.TOKEN}`);
+        const rest = new REST().setToken(globalConfig.clientToken);
 
-        rest.put(Routes.applicationCommands(`${process.env.CLIENT_ID}`), {
+        rest.put(Routes.applicationCommands(globalConfig.clientID), {
             body: [],
         })
             .then(() =>

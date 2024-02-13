@@ -1,6 +1,6 @@
 // Dependencies
-import globalConfig from "../../config.js";
-import { createPanel } from "../../util/Services/ApplicationService/index.js";
+import globalConfig from "@config";
+import { createPanel } from "@services/ApplicationService/index";
 
 import { Command } from "@sapphire/framework";
 

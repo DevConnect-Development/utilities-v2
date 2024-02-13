@@ -1,19 +1,19 @@
 // Dependencies
-import globalConfig from "../../../../config.js";
+import globalConfig from "@config";
 import {
     returnButton,
     resetSkillStaffEmbed,
-} from "../../../../util/Services/ApplicationService/index.js";
+} from "@services/ApplicationService/index";
 
 import {
     InteractionHandler,
     InteractionHandlerTypes,
 } from "@sapphire/framework";
-import { ButtonInteraction, TextChannel } from "discord.js";
+import { ButtonInteraction, GuildMember, TextChannel } from "discord.js";
 
 // Schemas
-import ChannelConfig from "../../../../util/schemas/Config/ChannelConfig.js";
-import SkillApplications from "../../../../util/schemas/Apps/SkillApplications.js";
+import ChannelConfig from "@schemas/Config/ChannelConfig";
+import SkillApplications from "@schemas/Apps/SkillApplications";
 
 export default class extends InteractionHandler {
     constructor(
@@ -41,6 +41,7 @@ export default class extends InteractionHandler {
         await interaction.deferUpdate();
 
         // Variables
+        const currentMember = interaction.member! as GuildMember;
         const applicationID = interaction.customId.split(".")[2];
 
         // Components
@@ -84,6 +85,18 @@ export default class extends InteractionHandler {
             return await interaction.editReply({
                 content:
                     "You are unable to submit this application as you already have a pending one for the same role.",
+                components: [createdReturnButton.components],
+                embeds: [],
+            });
+        }
+
+        // Check if Already Have Role
+        const userHasRole = currentMember.roles.cache.find(
+            (r) => r.name === fetchedApplication.app_role
+        );
+        if (userHasRole) {
+            return await interaction.editReply({
+                content: "You already have acquired this role.",
                 components: [createdReturnButton.components],
                 embeds: [],
             });

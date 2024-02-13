@@ -9,5 +9,8 @@ export default {
     developmentGuild: "1193804554790260739",
 
     clientToken: `${process.env.TOKEN}`,
-    clientID: `${process.env.CLIENT_ID}`
+    clientID: `${process.env.CLIENT_ID}`,
+    
+    roverToken: `${process.env.ROVER_KEY}`,
+    databaseString: `${process.env.MONGO_URL}`
 };

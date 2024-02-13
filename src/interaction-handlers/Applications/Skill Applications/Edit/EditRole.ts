@@ -2,7 +2,7 @@
 import {
     returnButton,
     resetSkillPreview,
-} from "../../../../util/Services/ApplicationService/index.js";
+} from "@services/ApplicationService/index";
 
 import {
     InteractionHandler,
@@ -11,7 +11,7 @@ import {
 import { StringSelectMenuInteraction } from "discord.js";
 
 // Schemas
-import SkillApplications from "../../../../util/schemas/Apps/SkillApplications.js";
+import SkillApplications from "@schemas/Apps/SkillApplications";
 
 export default class extends InteractionHandler {
     constructor(

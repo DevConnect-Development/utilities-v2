@@ -1,5 +1,5 @@
 // Dependencies
-import { createPanel } from "../../util/Services/ApplicationService/index.js";
+import { createPanel } from "@services/ApplicationService/index";
 
 import {
     InteractionHandler,

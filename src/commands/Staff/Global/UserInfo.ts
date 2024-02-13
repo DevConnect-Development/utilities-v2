@@ -1,8 +1,8 @@
 // Dependencies
-import globalConfig from "../../../config.js";
+import globalConfig from "@config";
 
 import noblox from "noblox.js";
-import { getRobloxInfo } from "../../../util/Services/UserService/index.js";
+import { getRobloxInfo } from "@services/UserService/index";
 
 import { Command } from "@sapphire/framework";
 import { PermissionFlagsBits, EmbedBuilder } from "discord.js";

@@ -1,6 +1,6 @@
 // Dependencies
-import globalConfig from "../../../../config.js";
-import { resetSkillLogEmbed } from "../../../../util/Services/ApplicationService/index.js";
+import globalConfig from "@config";
+import { resetSkillLogEmbed } from "@services/ApplicationService/index";
 
 import {
     InteractionHandler,
@@ -9,8 +9,8 @@ import {
 import { ButtonInteraction, TextChannel } from "discord.js";
 
 // Schemas
-import ChannelConfig from "../../../../util/schemas/Config/ChannelConfig.js";
-import SkillApplications from "../../../../util/schemas/Apps/SkillApplications.js";
+import ChannelConfig from "@schemas/Config/ChannelConfig";
+import SkillApplications from "@schemas/Apps/SkillApplications";
 
 export default class extends InteractionHandler {
     constructor(

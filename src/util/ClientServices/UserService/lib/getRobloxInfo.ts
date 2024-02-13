@@ -1,8 +1,5 @@
-// Env
-import { config } from "dotenv";
-config();
-
 // Dependencies
+import globalConfig from "@config";
 import axios from "axios";
 
 import { Command } from "@sapphire/framework";
@@ -23,7 +20,7 @@ export default async function getRobloxInfo(
     try {
         apiRequest = await axios.get(requestUrl, {
             headers: {
-                Authorization: `Bearer ${process.env.ROVER_KEY}`,
+                Authorization: `Bearer ${globalConfig.roverToken}`,
             },
         });
     } catch (e) {

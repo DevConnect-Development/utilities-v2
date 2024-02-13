@@ -1,5 +1,5 @@
 // Dependencies
-import globalConfig from "../../config.js";
+import globalConfig from "@config";
 import { Listener } from "@sapphire/framework";
 import {
     MessageReaction,
@@ -11,8 +11,8 @@ import {
 } from "discord.js";
 
 // Schemas
-import ChannelConfig from "../../util/schemas/Config/ChannelConfig.js";
-import BestCreations from "../../util/schemas/Miscellaneous/BestCreations.js";
+import ChannelConfig from "@schemas/Config/ChannelConfig";
+import BestCreations from "@schemas/Miscellaneous/BestCreations";
 
 export default class extends Listener {
     constructor(context: Listener.LoaderContext, options: Listener.Options) {

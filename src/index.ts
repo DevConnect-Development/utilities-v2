@@ -1,8 +1,8 @@
 // Dependencies
-import { start as MongoStart } from "./util/modules/mongodb.js";
-import botClient from "./class/client.js";
+import { databaseConnect } from "@modules/mongodb";
+import botClient from "@/class/client";
 
 // Create Client
 const Client = new botClient();
-await MongoStart();
+await databaseConnect();
 Client.start();

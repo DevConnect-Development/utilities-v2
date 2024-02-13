@@ -9,7 +9,7 @@ import {
 } from "discord.js";
 
 // Schemas
-import SkillApplications from "../../../../../schemas/Apps/SkillApplications.js";
+import SkillApplications from "@schemas/Apps/SkillApplications";
 
 export default async function (applicationID: String) {
     // Fetch Ticket

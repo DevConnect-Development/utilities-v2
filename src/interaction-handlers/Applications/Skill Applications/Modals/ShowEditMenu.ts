@@ -1,5 +1,5 @@
 // Dependencies
-import { returnButton } from "../../../../util/Services/ApplicationService/index.js";
+import { returnButton } from "@services/ApplicationService/index";
 
 import {
     InteractionHandler,
@@ -14,7 +14,7 @@ import {
 } from "discord.js";
 
 // Schemas
-import SkillApplications from "../../../../util/schemas/Apps/SkillApplications.js";
+import SkillApplications from "@schemas/Apps/SkillApplications";
 
 export default class extends InteractionHandler {
     constructor(

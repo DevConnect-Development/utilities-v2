@@ -1,12 +1,12 @@
 // Dependencies
-import globalConfig from "../../../config.js";
-import removeQueries from "../../../util/modules/removeQueries.js";
+import globalConfig from "@config";
+import removeQueries from "@modules/removeQueries";
 
 import { Listener } from "@sapphire/framework";
 import { Message, TextChannel, EmbedBuilder } from "discord.js";
 
 // Schemas
-import ChannelConfig from "../../../util/schemas/Config/ChannelConfig.js";
+import ChannelConfig from "@schemas/Config/ChannelConfig";
 
 export default class extends Listener {
     constructor(context: Listener.LoaderContext, options: Listener.Options) {

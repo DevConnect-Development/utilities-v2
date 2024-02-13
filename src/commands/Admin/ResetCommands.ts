@@ -1,5 +1,5 @@
 // Dependencies
-import globalConfig from "../../config.js";
+import globalConfig from "@config";
 
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import { PermissionFlagsBits, REST, Routes } from "discord.js";
