@@ -1,4 +1,6 @@
 // Dependencies
+import GetBaseURL from "@modules/Functions/GetBaseURL";
+
 import {
     EmbedBuilder,
     ButtonBuilder,
@@ -24,6 +26,7 @@ export default async function (applicationID: String) {
 
     // Variables
     const outstandingIssues: Array<String> = [];
+    const filteredPastWork = []
     const selectedRole = fetchedApplication.app_role;
 
     // Components
@@ -76,6 +79,14 @@ export default async function (applicationID: String) {
         submitButton
     );
 
+    // Sort Past Work
+    for (const example of fetchedApplication.provided_work) {
+        const baseURL = GetBaseURL(example)
+        if(baseURL) {
+            filteredPastWork.push(`[${baseURL}](${example})`)
+        }
+    }
+
     // Embed
     const mainEmbed = new EmbedBuilder()
         .setTitle(`Skill Application - ${fetchedApplication.app_role}`)
@@ -88,8 +99,8 @@ export default async function (applicationID: String) {
             {
                 name: "Work Examples",
                 value:
-                    fetchedApplication.provided_work.length > 0
-                        ? fetchedApplication.provided_work.join("\n")
+                filteredPastWork.length > 0
+                        ? filteredPastWork.join("\n")
                         : "No Work Provided",
                 inline: true,
             }

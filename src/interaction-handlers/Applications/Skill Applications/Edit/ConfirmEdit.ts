@@ -1,5 +1,5 @@
 // Dependencies
-import validator from "validator";;
+import validator from "validator";
 import {
     returnButton,
     resetSkillPreview,
