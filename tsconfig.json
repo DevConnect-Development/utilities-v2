@@ -107,7 +107,7 @@
         "skipLibCheck": true /* Skip type checking all .d.ts files. */,
         "paths": {
             "@/*": ["./src/*"],
-            "@config": ["./src/config.js"],
+            "@config": ["./src/config"],
 
             "@modules/*": ["./src/util/ClientModules/*"],
             "@schemas/*": ["./src/util/ClientSchemas/*"],
