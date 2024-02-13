@@ -1,5 +1,5 @@
 // Dependencies
-import { isURL } from "validator";
+import validator from "validator";;
 import {
     returnButton,
     resetSkillPreview,
@@ -67,7 +67,7 @@ export default class extends InteractionHandler {
         const filteredPastWork = []
 
         for (const example of cleanPastWork) {
-            if(isURL(example)) {
+            if(validator.isURL(example)) {
                 filteredPastWork.push(example)
             }
         }
