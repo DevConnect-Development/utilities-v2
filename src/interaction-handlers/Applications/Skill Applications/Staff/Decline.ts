@@ -71,7 +71,7 @@ export default class extends InteractionHandler {
             fetchedApplication.app_declinereasons as unknown as Array<String>;
         let filteredDeclineReasons = declineReasons.map((r) => {
             const filteredString = r as "Not_Sufficient" | "Troll_Application";
-            return globalConfig.skillApplicationDeclineReasons[filteredString];
+            return `- ${globalConfig.skillApplicationDeclineReasons[filteredString]}`;
         });
         const selectedMember = interaction.guild?.members.cache.find(
             (u) => u.id === fetchedApplication.author_id
