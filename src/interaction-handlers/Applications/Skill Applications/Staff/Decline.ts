@@ -67,6 +67,12 @@ export default class extends InteractionHandler {
         }
 
         // Send Message
+        const declineReasons =
+            fetchedApplication.app_declinereasons as unknown as Array<String>;
+        let filteredDeclineReasons = declineReasons.map((r) => {
+            const filteredString = r as "Not_Sufficient" | "Troll_Application";
+            return globalConfig.skillApplicationDeclineReasons[filteredString];
+        });
         const selectedMember = interaction.guild?.members.cache.find(
             (u) => u.id === fetchedApplication.author_id
         );
@@ -81,8 +87,17 @@ export default class extends InteractionHandler {
             .send(
                 [
                     `Your **Skill Role Application** for \`${fetchedApplication.app_role}\` has been declined.`,
-                    `You may contact an Application Reader for more information.`,
-                ].join("\n")
+                    `${
+                        declineReasons.length < 1
+                            ? "You may contact an Application Reader for more information."
+                            : ""
+                    }`,
+                    declineReasons.length > 0
+                        ? `\`\`\` ${filteredDeclineReasons.join("\n")} \`\`\``
+                        : "",
+                ]
+                    .filter(Boolean)
+                    .join("\n")
             )
             .catch((e) => {
                 console.log(
