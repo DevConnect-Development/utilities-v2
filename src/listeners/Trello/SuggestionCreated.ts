@@ -21,11 +21,12 @@ export default class extends Listener {
     async run(thread: ThreadChannel) {
         // Variables
         const currentAuthor = await thread.fetchOwner();
+        const currentMessage = await thread.fetchStarterMessage();
         const helpChannelID = globalConfig.specificChannels.staffSuggestions;
         const trelloClient = this.container.trello
 
         // No Author?
-        if(!currentAuthor?.user) {
+        if(!currentAuthor?.user || !currentMessage) {
             return;
         }
 
@@ -38,7 +39,9 @@ export default class extends Listener {
                 idList: "65cdc66e9519e41007405788",
                 name: thread.name,
                 desc: [
-                    `Created by: **@${currentAuthor.user.username}**`
+                    `Created by: **@${currentAuthor.user.username}**`,
+                    ``,
+                    `> ${currentMessage.content}`
                 ].join("\n")
             }).catch(e => {
                 return;
