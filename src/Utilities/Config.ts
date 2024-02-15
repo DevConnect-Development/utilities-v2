@@ -33,9 +33,10 @@ export default {
 
         "twitter.com",
         "www.twitter.com",
-        
         "x.com",
         "www.x.com",
+
+        "github.com",
     ],
 
     skillApplicationDeclineReasons: {
