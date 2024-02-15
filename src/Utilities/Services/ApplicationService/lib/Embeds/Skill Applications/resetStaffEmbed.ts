@@ -26,6 +26,8 @@ export default async function (applicationID: String) {
     }
 
     // Variables
+    const selectedReasons =
+        fetchedApplication.app_declinereasons as unknown as Array<String>;
     const filteredPastWork = [];
 
     // Components
@@ -46,14 +48,15 @@ export default async function (applicationID: String) {
         .setCustomId(
             `applications.skillselectdeclinereason.${fetchedApplication.app_id}`
         )
-        .setPlaceholder("Select decline reasons to show the user.")
+        .setPlaceholder("Select one or more reasons to deny.")
         .setOptions(
             new StringSelectMenuOptionBuilder()
                 .setLabel("Not Sufficient")
                 .setDescription(
                     "The past work is not sufficient enough for this skill role."
                 )
-                .setValue("Not_Sufficient"),
+                .setValue("Not_Sufficient")
+                .setDefault(selectedReasons.includes("Not_Sufficient") ? true : false),
 
             new StringSelectMenuOptionBuilder()
                 .setLabel("Troll Application")
@@ -61,6 +64,7 @@ export default async function (applicationID: String) {
                     "This application is a troll application, and will not be reviewed."
                 )
                 .setValue("Troll_Application")
+                .setDefault(selectedReasons.includes("Troll_Application") ? true : false)
         )
         .setMinValues(1)
         .setMaxValues(2);
@@ -120,10 +124,7 @@ export default async function (applicationID: String) {
     );
 
     // Conditional Components
-    if (
-        (fetchedApplication.app_declinereasons as unknown as Array<String>)
-            .length > 0
-    ) {
+    if (selectedReasons.length > 0) {
         approveButton.setDisabled(true);
     }
     if (fetchedApplication.app_claimant) {
