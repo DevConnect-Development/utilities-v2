@@ -90,34 +90,50 @@ export default async function (applicationID: String) {
     // Embed
     const mainEmbed = new EmbedBuilder()
         .setTitle(`Skill Application - ${fetchedApplication.app_role}`)
-        .addFields(
-            {
-                name: "Author",
-                value: `<@${fetchedApplication.author_id}> (${fetchedApplication.author_id})`,
-                inline: true,
-            },
-            {
-                name: "Work Examples",
-                value:
-                    filteredPastWork.length > 0
-                        ? filteredPastWork.join("\n")
-                        : "No Work Provided",
-                inline: true,
-            }
-        )
         .setFooter({
             text: `ID: ${fetchedApplication.app_id}`,
         });
 
     // Conditional Components
     if (fetchedApplication.app_claimant) {
-        claimButton.setLabel("Unclaim");
+        mainEmbed.addFields({
+            name: "Status",
+            value: `Claimed by: <@${fetchedApplication.app_claimant}>`,
+        });
+    }
+
+    // Add Fields
+    mainEmbed.addFields(
+        {
+            name: "Author",
+            value: `<@${fetchedApplication.author_id}> (${fetchedApplication.author_id})`,
+            inline: true,
+        },
+        {
+            name: "Work Examples",
+            value:
+                filteredPastWork.length > 0
+                    ? filteredPastWork.join("\n")
+                    : "No Work Provided",
+            inline: false,
+        }
+    );
+
+    // Conditional Components
+    if (
+        (fetchedApplication.app_declinereasons as unknown as Array<String>)
+            .length > 0
+    ) {
+        approveButton.setDisabled(true);
+    }
+    if (fetchedApplication.app_claimant) {
+        mainEmbed.setColor("Red");
+        claimButton.setLabel("Unclaim").setStyle(ButtonStyle.Danger);
     }
     if (fetchedApplication.provided_comment) {
         mainEmbed.addFields({
             name: "Additional Comment",
             value: fetchedApplication.provided_comment,
-            inline: false,
         });
     }
 
