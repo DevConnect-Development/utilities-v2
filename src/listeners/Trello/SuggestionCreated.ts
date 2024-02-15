@@ -61,7 +61,7 @@ export default class extends Listener {
                     ``,
                     `> ${currentMessage.content}`
                 ].join("\n"),
-                idLabels: formattedLabels
+                idLabels: [...formattedLabels]
             }).catch(e => {
                 return;
             })
