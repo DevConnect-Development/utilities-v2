@@ -56,7 +56,9 @@ export default async function (applicationID: String) {
                     "The past work is not sufficient enough for this skill role."
                 )
                 .setValue("Not_Sufficient")
-                .setDefault(selectedReasons.includes("Not_Sufficient") ? true : false),
+                .setDefault(
+                    selectedReasons.includes("Not_Sufficient") ? true : false
+                ),
 
             new StringSelectMenuOptionBuilder()
                 .setLabel("Troll Application")
@@ -64,9 +66,11 @@ export default async function (applicationID: String) {
                     "This application is a troll application, and will not be reviewed."
                 )
                 .setValue("Troll_Application")
-                .setDefault(selectedReasons.includes("Troll_Application") ? true : false)
+                .setDefault(
+                    selectedReasons.includes("Troll_Application") ? true : false
+                )
         )
-        .setMinValues(1)
+        .setMinValues(0)
         .setMaxValues(2);
 
     const declineReasonAR =

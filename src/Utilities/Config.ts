@@ -36,5 +36,10 @@ export default {
         
         "x.com",
         "www.x.com",
-    ]
+    ],
+
+    skillApplicationDeclineReasons: {
+        Not_Sufficient: "You have not provided sufficient past work examples.",
+        Troll_Application: "The application you submitted was considered a Troll Application.",
+    }
 };
