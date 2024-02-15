@@ -6,6 +6,8 @@ import {
     EmbedBuilder,
     ButtonBuilder,
     ButtonStyle,
+    StringSelectMenuBuilder,
+    StringSelectMenuOptionBuilder,
     ActionRowBuilder,
 } from "discord.js";
 
@@ -35,9 +37,42 @@ export default async function (applicationID: String) {
         .setCustomId(`applications.skilldecline.${fetchedApplication.app_id}`)
         .setLabel("Decline")
         .setStyle(ButtonStyle.Danger);
+    const claimButton = new ButtonBuilder()
+        .setCustomId(`applications.skillclaim.${fetchedApplication.app_id}`)
+        .setLabel("Claim")
+        .setStyle(ButtonStyle.Primary);
+
+    const declineReasonSelect = new StringSelectMenuBuilder()
+        .setCustomId(
+            `applications.skillselectdeclinereason.${fetchedApplication.app_id}`
+        )
+        .setPlaceholder("Select decline reasons to show the user.")
+        .setOptions(
+            new StringSelectMenuOptionBuilder()
+                .setLabel("Not Sufficient")
+                .setDescription(
+                    "The past work is not sufficient enough for this skill role."
+                )
+                .setValue("Not_Sufficient"),
+
+            new StringSelectMenuOptionBuilder()
+                .setLabel("Troll Application")
+                .setDescription(
+                    "This application is a troll application, and will not be reviewed."
+                )
+                .setValue("Troll_Application")
+        )
+        .setMinValues(1)
+        .setMaxValues(6);
+
+    const declineReasonAR =
+        new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+            declineReasonSelect
+        );
     const buttonsAR = new ActionRowBuilder<ButtonBuilder>().addComponents(
         approveButton,
-        declineButton
+        declineButton,
+        claimButton
     );
 
     // Sort Past Work
@@ -47,9 +82,7 @@ export default async function (applicationID: String) {
             const isVerified = globalConfig.verifiedURLS.includes(baseURL);
 
             filteredPastWork.push(
-                `[${baseURL}](${example}) ${
-                    !isVerified ? "**[❗]**" : ""
-                }`
+                `[${baseURL}](${example}) ${!isVerified ? "**[❗]**" : ""}`
             );
         }
     }
@@ -66,7 +99,7 @@ export default async function (applicationID: String) {
             {
                 name: "Work Examples",
                 value:
-                filteredPastWork.length > 0
+                    filteredPastWork.length > 0
                         ? filteredPastWork.join("\n")
                         : "No Work Provided",
                 inline: true,
@@ -76,7 +109,10 @@ export default async function (applicationID: String) {
             text: `ID: ${fetchedApplication.app_id}`,
         });
 
-    // Optional Fields
+    // Conditional Components
+    if (fetchedApplication.app_claimant) {
+        claimButton.setLabel("Unclaim").setStyle(ButtonStyle.Danger);
+    }
     if (fetchedApplication.provided_comment) {
         mainEmbed.addFields({
             name: "Additional Comment",
@@ -88,6 +124,6 @@ export default async function (applicationID: String) {
     // Return Embed
     return {
         embeds: [mainEmbed],
-        components: [buttonsAR],
+        components: [buttonsAR, declineReasonAR],
     };
 }
