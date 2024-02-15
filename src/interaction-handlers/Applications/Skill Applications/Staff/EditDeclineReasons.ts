@@ -26,7 +26,7 @@ export default class extends InteractionHandler {
     parse(interaction: StringSelectMenuInteraction) {
         const [category, action] = interaction.customId.split(".");
 
-        if (category !== "applications" || action !== "skillselectrole")
+        if (category !== "applications" || action !== "skillselectdeclinereason")
             return this.none();
 
         return this.some();
