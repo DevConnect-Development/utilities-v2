@@ -20,8 +20,12 @@ export default async function (applicationID: String) {
     }
 
     // Variables
-    const selectedReasons =
+    const declineReasons =
         fetchedApplication.app_declinereasons as unknown as Array<String>;
+    const filteredDeclineReasons = declineReasons.map((r) => {
+        return r.toUpperCase();
+    });
+
     const filteredPastWork = [];
     const appReviewer = container.client.users.cache.find(
         (u) => u.id === fetchedApplication.app_reviewer
@@ -82,10 +86,10 @@ export default async function (applicationID: String) {
             value: fetchedApplication.provided_comment,
         });
     }
-    if (selectedReasons.length > 0) {
+    if (declineReasons.length > 0) {
         mainEmbed.addFields({
             name: "Decline Reasons",
-            value: `\`\`\`${selectedReasons.join("\n").toUpperCase()}\`\`\``,
+            value: `\`\`\`${filteredDeclineReasons.join("\n")}\`\`\``,
         });
     }
 

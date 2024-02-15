@@ -93,7 +93,7 @@ export default class extends InteractionHandler {
                             : ""
                     }`,
                     declineReasons.length > 0
-                        ? `\`\`\` ${filteredDeclineReasons.join("\n")} \`\`\``
+                        ? filteredDeclineReasons.join("\n")
                         : "",
                 ]
                     .filter(Boolean)
