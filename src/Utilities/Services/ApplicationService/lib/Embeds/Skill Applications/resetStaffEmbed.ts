@@ -63,7 +63,7 @@ export default async function (applicationID: String) {
                 .setValue("Troll_Application")
         )
         .setMinValues(1)
-        .setMaxValues(6);
+        .setMaxValues(2);
 
     const declineReasonAR =
         new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
