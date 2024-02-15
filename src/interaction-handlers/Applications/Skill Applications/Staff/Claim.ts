@@ -57,7 +57,7 @@ export default class extends InteractionHandler {
         }
 
         await fetchedApplication.updateOne({
-            app_claimant: interaction.user.id,
+            app_claimant: chosenClaimant,
         });
 
         // Fetch Embed

@@ -111,7 +111,7 @@ export default async function (applicationID: String) {
 
     // Conditional Components
     if (fetchedApplication.app_claimant) {
-        claimButton.setLabel("Unclaim").setStyle(ButtonStyle.Danger);
+        claimButton.setLabel("Unclaim");
     }
     if (fetchedApplication.provided_comment) {
         mainEmbed.addFields({
