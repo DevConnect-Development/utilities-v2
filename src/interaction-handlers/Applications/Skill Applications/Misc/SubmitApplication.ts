@@ -14,6 +14,7 @@ import { ButtonInteraction, GuildMember, TextChannel } from "discord.js";
 // Schemas
 import ChannelConfig from "@schemas/Config/ChannelConfig";
 import SkillApplications from "@schemas/Apps/SkillApplications";
+import SkillRoles from "@/Utilities/Schemas/Apps/SkillRoles";
 
 export default class extends InteractionHandler {
     constructor(
@@ -91,10 +92,14 @@ export default class extends InteractionHandler {
         }
 
         // Check if Already Have Role
+        const dbUserHasRole = await SkillRoles.exists({
+            user_id: currentMember.id,
+            skill_role: fetchedApplication.app_role,
+        });
         const userHasRole = currentMember.roles.cache.find(
             (r) => r.name === fetchedApplication.app_role
         );
-        if (userHasRole) {
+        if (userHasRole || dbUserHasRole) {
             return await interaction.editReply({
                 content: "You already have acquired this role.",
                 components: [createdReturnButton.components],

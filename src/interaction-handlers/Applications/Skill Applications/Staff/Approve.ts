@@ -11,6 +11,7 @@ import { ButtonInteraction, TextChannel } from "discord.js";
 // Schemas
 import ChannelConfig from "@schemas/Config/ChannelConfig";
 import SkillApplications from "@schemas/Apps/SkillApplications";
+import SkillRoles from "@schemas/Apps/SkillRoles";
 
 export default class extends InteractionHandler {
     constructor(
@@ -91,10 +92,14 @@ export default class extends InteractionHandler {
                 );
             });
 
-        // Set Application Status
+        // Set Application Status & Create Skill Role Entry
         await fetchedApplication.updateOne({
             app_status: "Approved",
             app_reviewer: interaction.user.id,
+        });
+        await SkillRoles.create({
+            user_id: selectedMember.id,
+            skill_role: fetchedApplication.app_role,
         });
 
         // Fetch Embed

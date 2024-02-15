@@ -22,10 +22,6 @@ export default async function (applicationID: String) {
     // Variables
     const declineReasons =
         fetchedApplication.app_declinereasons as unknown as Array<String>;
-    const filteredDeclineReasons = declineReasons.map((r) => {
-        return r.toUpperCase();
-    });
-
     const filteredPastWork = [];
     const appReviewer = container.client.users.cache.find(
         (u) => u.id === fetchedApplication.app_reviewer
@@ -89,7 +85,7 @@ export default async function (applicationID: String) {
     if (declineReasons.length > 0) {
         mainEmbed.addFields({
             name: "Decline Reasons",
-            value: `\`\`\`${filteredDeclineReasons.join("\n")}\`\`\``,
+            value: `\`\`\`${declineReasons.join("\n").toUpperCase()}\`\`\``,
         });
     }
 
