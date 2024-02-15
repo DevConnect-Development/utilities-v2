@@ -130,6 +130,8 @@ export default async function (applicationID: String) {
     // Conditional Components
     if (selectedReasons.length > 0) {
         approveButton.setDisabled(true);
+    } else {
+        declineButton.setDisabled(true);
     }
     if (fetchedApplication.app_claimant) {
         mainEmbed.setColor("Red");
