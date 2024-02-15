@@ -30,6 +30,24 @@ export default class extends Listener {
             return;
         }
 
+        // Trello IDs
+        type trelloTag = keyof typeof trelloIDs.labels
+        const trelloIDs = {
+            suggestionsList: "65cdc66e9519e41007405788",
+
+            labels: {
+                "Website": "65cdc5b934b1d6aee31ffbb5",
+                "Server": "65cdc5b934b1d6aee31ffbb0",
+                "DevConnect Bot": "65cdc5b934b1d6aee31ffba9",
+                "DC Moderation": "65cdc9a5233d306cb45b499c",
+                "Other": "65cdc9ab4651a22e0193177a"
+            }
+        }
+        
+        const formattedLabels = thread.appliedTags.map(tag => {
+            return trelloIDs.labels[tag as trelloTag]
+        })
+
         // Send Help Embed
         if (thread.parentId === helpChannelID) {
             await delay(200);
@@ -39,10 +57,11 @@ export default class extends Listener {
                 idList: "65cdc66e9519e41007405788",
                 name: thread.name,
                 desc: [
-                    `Created by: **@${currentAuthor.user.username}**`,
+                    `**Created by: @${currentAuthor.user.username} (${currentAuthor.id})**`,
                     ``,
                     `> ${currentMessage.content}`
-                ].join("\n")
+                ].join("\n"),
+                idLabels: formattedLabels
             }).catch(e => {
                 return;
             })
