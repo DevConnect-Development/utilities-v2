@@ -4,7 +4,8 @@ import delay from "delay";
 
 import { Listener } from "@sapphire/framework";
 import {
-    ThreadChannel
+    ThreadChannel,
+    ForumChannel
 } from "discord.js";
 
 // Schemas
@@ -31,7 +32,6 @@ export default class extends Listener {
         }
 
         // Trello IDs
-        console.log(thread.appliedTags)
         type trelloTag = keyof typeof trelloIDs.labels
         const trelloIDs = {
             suggestionsList: "65cdc66e9519e41007405788",
@@ -46,6 +46,15 @@ export default class extends Listener {
         }
         
         const formattedLabels = thread.appliedTags.map(tag => {
+            const availableTags = (thread.parent as ForumChannel).availableTags
+            let currentTag
+
+            for (const foundTag of availableTags) {
+                if(foundTag.id === tag) {
+                    currentTag = foundTag.name
+                }
+            }
+
             return trelloIDs.labels[tag as trelloTag]
         })
 
