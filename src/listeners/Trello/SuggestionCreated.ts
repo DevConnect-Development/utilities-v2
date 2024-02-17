@@ -31,6 +31,7 @@ export default class extends Listener {
         }
 
         // Trello IDs
+        console.log(thread.appliedTags)
         type trelloTag = keyof typeof trelloIDs.labels
         const trelloIDs = {
             suggestionsList: "65cdc66e9519e41007405788",
@@ -57,9 +58,11 @@ export default class extends Listener {
                 idList: "65cdc66e9519e41007405788",
                 name: thread.name,
                 desc: [
-                    `**Created by: @${currentAuthor.user.username} (${currentAuthor.id})**`,
+                    `**Origin:** DevConnect Bot Suggestions Collector`,
+                    `**Submitter:** @${currentAuthor.user.username} \`(${currentAuthor.id})\``,
+                    `**Submission Link:** [Click Here](${thread.url})`,
                     ``,
-                    `> ${currentMessage.content}`
+                    `\`\`\`${currentMessage.content}\`\`\``
                 ].join("\n"),
                 idLabels: [...formattedLabels]
             }).catch(e => {
