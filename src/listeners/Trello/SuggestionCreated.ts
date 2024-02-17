@@ -3,10 +3,7 @@ import globalConfig from "@config";
 import delay from "delay";
 
 import { Listener } from "@sapphire/framework";
-import {
-    ThreadChannel,
-    ForumChannel
-} from "discord.js";
+import { ThreadChannel, ForumChannel } from "discord.js";
 
 // Schemas
 import ChannelConfig from "@schemas/Config/ChannelConfig";
@@ -24,61 +21,78 @@ export default class extends Listener {
         const currentAuthor = await thread.fetchOwner();
         const currentMessage = await thread.fetchStarterMessage();
         const helpChannelID = globalConfig.specificChannels.staffSuggestions;
-        const trelloClient = this.container.trello
+        const trelloClient = this.container.trello;
 
         // No Author?
-        if(!currentAuthor?.user || !currentMessage) {
+        if (!currentAuthor?.user || !currentMessage) {
             return;
         }
 
         // Trello IDs
-        type trelloTag = keyof typeof trelloIDs.labels
+        type trelloTag = keyof typeof trelloIDs.labels;
         const trelloIDs = {
             suggestionsList: "65cdc66e9519e41007405788",
 
             labels: {
-                "Website": "65cdc5b934b1d6aee31ffbb5",
-                "Server": "65cdc5b934b1d6aee31ffbb0",
+                Website: "65cdc5b934b1d6aee31ffbb5",
+                Server: "65cdc5b934b1d6aee31ffbb0",
                 "DevConnect Bot": "65cdc5b934b1d6aee31ffba9",
                 "DC Moderation": "65cdc9a5233d306cb45b499c",
-                "Other": "65cdc9ab4651a22e0193177a"
-            }
-        }
-        
-        const formattedLabels = thread.appliedTags.map(tag => {
-            const availableTags = (thread.parent as ForumChannel).availableTags
-            let currentTag
+                Other: "65cdc9ab4651a22e0193177a",
+            },
+        };
+
+        const formattedLabels = thread.appliedTags.map(async (tag) => {
+            const availableTags = (thread.parent as ForumChannel).availableTags;
+            let currentTag;
 
             for (const foundTag of availableTags) {
-                if(foundTag.id === tag) {
-                    console.log(`Tag Found: ${foundTag.name}`)
-                    currentTag = foundTag.name
+                if (foundTag.id === tag) {
+                    console.log(`Tag Found: ${foundTag.name}`);
+                    currentTag = foundTag.name;
                 }
             }
 
-            console.log(`Returning ${trelloIDs.labels[tag as trelloTag]}`)
-            return trelloIDs.labels[tag as trelloTag]
-        })
+            console.log(`Returning ${trelloIDs.labels[tag as trelloTag]}`);
+            return trelloIDs.labels[tag as trelloTag];
+        });
 
         // Send Help Embed
         if (thread.parentId === helpChannelID) {
             await delay(200);
 
             // Create Card
-            return await trelloClient.cards.createCard({
-                idList: "65cdc66e9519e41007405788",
-                name: thread.name,
-                desc: [
-                    `**Origin:** DevConnect Bot Suggestions Collector`,
-                    `**Submitter:** @${currentAuthor.user.username} \`(${currentAuthor.id})\``,
-                    `**Submission Link:** [Click Here](${thread.url})`,
-                    ``,
-                    `\`\`\`${currentMessage.content}\`\`\``
-                ].join("\n"),
-                idLabels: [...formattedLabels]
-            }).catch(e => {
-                return;
-            })
+            const formattedLabels = await Promise.all(thread.appliedTags.map(async (tag) => {
+                const availableTags = (thread.parent as ForumChannel).availableTags;
+                let currentTag;
+
+                for (const foundTag of availableTags) {
+                    if (foundTag.id === tag) {
+                        console.log(`Tag Found: ${foundTag.name}`);
+                        currentTag = foundTag.name;
+                    }
+                }
+
+                console.log(`Returning ${trelloIDs.labels[tag as trelloTag]}`);
+                return trelloIDs.labels[tag as trelloTag];
+            }));
+
+            return await trelloClient.cards
+                .createCard({
+                    idList: "65cdc66e9519e41007405788",
+                    name: thread.name,
+                    desc: [
+                        `**Origin:** DevConnect Bot Suggestions Collector`,
+                        `**Submitter:** @${currentAuthor.user.username} \`(${currentAuthor.id})\``,
+                        `**Submission Link:** [Click Here](${thread.url})`,
+                        ``,
+                        `\`\`\`${currentMessage.content}\`\`\``,
+                    ].join("\n"),
+                    idLabels: [...formattedLabels],
+                })
+                .catch((e) => {
+                    return;
+                });
         }
     }
 }
