@@ -51,10 +51,12 @@ export default class extends Listener {
 
             for (const foundTag of availableTags) {
                 if(foundTag.id === tag) {
+                    console.log(`Tag Found: ${foundTag.name}`)
                     currentTag = foundTag.name
                 }
             }
 
+            console.log(`Returning ${trelloIDs.labels[tag as trelloTag]}`)
             return trelloIDs.labels[tag as trelloTag]
         })
 
