@@ -5,9 +5,6 @@ import delay from "delay";
 import { Listener } from "@sapphire/framework";
 import { ThreadChannel, ForumChannel } from "discord.js";
 
-// Schemas
-import ChannelConfig from "@schemas/Config/ChannelConfig";
-
 export default class extends Listener {
     constructor(context: Listener.LoaderContext, options: Listener.Options) {
         super(context, {
@@ -41,8 +38,7 @@ export default class extends Listener {
                 Other: "65cdc9ab4651a22e0193177a",
             },
         };
-
-        const formattedLabels = thread.appliedTags.map(async (tag) => {
+        const formattedLabels = await Promise.all(thread.appliedTags.map(async (tag) => {
             const availableTags = (thread.parent as ForumChannel).availableTags;
             let currentTag;
 
@@ -53,29 +49,13 @@ export default class extends Listener {
                 }
             }
 
-            console.log(`Returning ${trelloIDs.labels[tag as trelloTag]}`);
-            return trelloIDs.labels[tag as trelloTag];
-        });
+            console.log(`Returning ${trelloIDs.labels[currentTag as trelloTag]}`);
+            return trelloIDs.labels[currentTag as trelloTag];
+        }));
 
         // Send Help Embed
         if (thread.parentId === helpChannelID) {
             await delay(200);
-
-            // Create Card
-            const formattedLabels = await Promise.all(thread.appliedTags.map(async (tag) => {
-                const availableTags = (thread.parent as ForumChannel).availableTags;
-                let currentTag;
-
-                for (const foundTag of availableTags) {
-                    if (foundTag.id === tag) {
-                        console.log(`Tag Found: ${foundTag.name}`);
-                        currentTag = foundTag.name;
-                    }
-                }
-
-                console.log(`Returning ${trelloIDs.labels[tag as trelloTag]}`);
-                return trelloIDs.labels[tag as trelloTag];
-            }));
 
             return await trelloClient.cards
                 .createCard({
