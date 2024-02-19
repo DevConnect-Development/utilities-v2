@@ -71,7 +71,7 @@ export default class extends Command {
         // Get Infractions
         const userInfractions = await UserInfractions
             .find({
-                user: chosenUser.id,
+                infraction_user: interaction.user.id
             })
             .sort("-timestamp_start");
         const userInfractionsLength = userInfractions.length;
