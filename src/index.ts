@@ -1,7 +1,7 @@
 // Dependencies
 import { databaseConnect } from "@modules/DB/HandleMongo";
 import { createTrelloClient } from "./Utilities/Modules/DB/TrelloClient";
-import botClient from "@/class/client";
+import botClient from "@/Utilities/Class/Client";
 
 // Create Client
 const Client = new botClient();

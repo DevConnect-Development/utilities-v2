@@ -14,7 +14,8 @@ import { ButtonInteraction, GuildMember, TextChannel } from "discord.js";
 // Schemas
 import ChannelConfig from "@schemas/Config/ChannelConfig";
 import SkillApplications from "@schemas/Apps/SkillApplications";
-import SkillRoles from "@/Utilities/Schemas/Apps/SkillRoles";
+import SkillRoles from "@schemas/Apps/SkillRoles";
+import ActiveMutes from "@schemas/Infractions/ActiveMutes";
 
 export default class extends InteractionHandler {
     constructor(
@@ -59,6 +60,21 @@ export default class extends InteractionHandler {
         if (!skillApps || !skillAppsChannel) {
             return await interaction.editReply({
                 content: "Interaction has failed.",
+                components: [createdReturnButton.components],
+                embeds: [],
+            });
+        }
+
+        // Check if Application Ban
+        const currentApplicationBan = await ActiveMutes.exists({
+            guild_id: interaction.guildId,
+            user_id: interaction.user.id,
+            mute_type: "Application Mute",
+        });
+        if (currentApplicationBan) {
+            return await interaction.editReply({
+                content:
+                    "You have an active application mute, and are disallowed from submitting new applications.",
                 components: [createdReturnButton.components],
                 embeds: [],
             });
