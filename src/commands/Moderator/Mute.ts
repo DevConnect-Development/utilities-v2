@@ -77,7 +77,10 @@ export default class extends Command {
                     );
             },
             {
-                guildIds: [globalConfig.communityGuild, globalConfig.developmentGuild],
+                guildIds: [
+                    globalConfig.communityGuild,
+                    globalConfig.developmentGuild,
+                ],
             }
         );
     }
@@ -139,6 +142,7 @@ export default class extends Command {
                         "Missing Required Permissions."
                     );
                 }
+                break;
             }
 
             case "Marketplace": {
@@ -147,6 +151,7 @@ export default class extends Command {
                         "Missing Required Permissions."
                     );
                 }
+                break;
             }
 
             case "Applications": {
@@ -155,6 +160,7 @@ export default class extends Command {
                         "Missing Required Permissions."
                     );
                 }
+                break;
             }
         }
 
@@ -208,16 +214,17 @@ export default class extends Command {
                     `\`\`\``,
                     `${selectedMuteReason}`,
                     `\`\`\``,
-                    ``,
                     `It will expire on <t:${muteFinishesTimestamp}:f>.`,
                 ].join("\n")
             )
             .setColor("Red");
 
         // Send Mute Message
-        await selectedUser.send({
-            embeds: [muteEmbed]
-        }).catch()
+        await selectedUser
+            .send({
+                embeds: [muteEmbed],
+            })
+            .catch();
 
         // Create DB Entries
         const activeMuteEntry = await ActiveMutes.create({
