@@ -170,28 +170,39 @@ export default class extends Command {
         }
 
         // Add Mute Roles
-        if(selectedMember) {
-            switch(selectedMuteType) {
+        if (selectedMember) {
+            switch (selectedMuteType) {
                 case "Server": {
-                    if(serverMuteRole) {
-                        await selectedMember.roles.add(serverMuteRole)
+                    if (serverMuteRole) {
+                        await selectedMember.roles.add(serverMuteRole);
                         break;
                     }
                 }
 
                 case "Marketplace": {
-                    if(marketplaceMuteRole) {
-                        await selectedMember.roles.add(marketplaceMuteRole)
+                    if (marketplaceMuteRole) {
+                        await selectedMember.roles.add(marketplaceMuteRole);
                         break;
                     }
                 }
             }
         }
 
+        // Check Already Muted
+        const alreadyMuted = await ActiveMutes.exists({
+            guild_id: currentGuild.id,
+            user_id: selectedUser.id,
+        });
+        if (alreadyMuted) {
+            return await interaction.editReply(
+                "Selected user already has an active mute."
+            );
+        }
+
         // Create DB Entries
         const activeMuteEntry = await ActiveMutes.create({
             guild_id: currentGuild.id,
-            user_id: interaction.user.id,
+            user_id: selectedUser.id,
 
             mute_type: selectedMuteType,
             mute_expires: muteFinishesTimestamp,

@@ -159,7 +159,7 @@ export default class extends Command {
                         )
                     )
                     .setFooter({
-                        text: `${userInfractionsLength} Total Infraction${userInfractionsLength === 1 ? "s" : ""}`,
+                        text: `${userInfractionsLength} Total Infraction${userInfractionsLength === 1 ? "" : "s"}`,
                     });
 
                 // Return Embed
