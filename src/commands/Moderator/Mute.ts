@@ -5,7 +5,7 @@ import Timestring from "@modules/Functions/Timestring";
 import moment from "moment";
 
 import { Command } from "@sapphire/framework";
-import { GuildMember, Guild, EmbedBuilder } from "discord.js";
+import { GuildMember, Guild, EmbedBuilder, User } from "discord.js";
 
 // Schemas
 import UserInfractions from "@schemas/Infractions/UserInfractions";
@@ -94,7 +94,7 @@ export default class extends Command {
         const selectedMuteReason = interaction.options.getString("reason");
         const selectedMuteEvidence = interaction.options.getString("evidence");
 
-        let formattedEvidence: Array<String>;
+        let formattedEvidence: Array<String> = [];
 
         // Parameter Check
         if (
@@ -113,6 +113,15 @@ export default class extends Command {
         const selectedMember = currentGuild.members.cache.get(
             selectedUser.id
         ) as GuildMember;
+        let muteFinishesTimestamp: String;
+
+        // Roles
+        const serverMuteRole = currentGuild.roles.cache.find(
+            (r) => r.name === "Server Mute"
+        );
+        const marketplaceMuteRole = currentGuild.roles.cache.find(
+            (r) => r.name === "Marketplace Mute"
+        );
 
         // Evidence Verification
         if (selectedMuteEvidence) {
@@ -122,7 +131,10 @@ export default class extends Command {
         // Permissions Check
         switch (selectedMuteType) {
             case "Server": {
-                if (!userHasRole(currentMember, "Moderator")) {
+                if (
+                    !userHasRole(currentMember, "Moderator") &&
+                    !userHasRole(currentMember, "Trial Moderator")
+                ) {
                     return await interaction.editReply(
                         "Missing Required Permissions."
                     );
@@ -138,14 +150,66 @@ export default class extends Command {
             }
 
             case "Applications": {
-                if (
-                    !userHasRole(currentMember, "Application Reader")
-                ) {
+                if (!userHasRole(currentMember, "Application Reader")) {
                     return await interaction.editReply(
                         "Missing Required Permissions."
                     );
                 }
             }
         }
+
+        // Validate Mute Time
+        try {
+            muteFinishesTimestamp = `${
+                currentTimestamp + Timestring(selectedMuteLength, "seconds")
+            }`;
+        } catch (e) {
+            return await interaction.editReply(
+                "Failed to set mute length. Please ensure you wrote it correctly."
+            );
+        }
+
+        // Add Mute Roles
+        if(selectedMember) {
+            switch(selectedMuteType) {
+                case "Server": {
+                    if(serverMuteRole) {
+                        await selectedMember.roles.add(serverMuteRole)
+                    }
+                }
+
+                case "Marketplace": {
+                    if(marketplaceMuteRole) {
+                        await selectedMember.roles.add(marketplaceMuteRole)
+                    }
+                }
+            }
+        }
+
+        // Create DB Entries
+        const activeMuteEntry = await ActiveMutes.create({
+            guild_id: currentGuild.id,
+            user_id: interaction.user.id,
+
+            mute_type: selectedMuteType,
+            mute_expires: muteFinishesTimestamp,
+        });
+        const infractionEntry = await UserInfractions.create({
+            infraction_type: `${selectedMuteType} Mute`,
+
+            infraction_user: selectedUser.id,
+            infraction_moderator: interaction.user.id,
+
+            infraction_reason: selectedMuteReason,
+            attached_evidence: formattedEvidence,
+
+            timestamp_start: currentTimestamp,
+            timestamp_end: muteFinishesTimestamp,
+        });
+
+        // Reply
+        return await interaction.editReply(
+            `Successfully muted ${selectedUser} ***(${selectedUser.id})***.\nInfraction ID: \`${infractionEntry.id}\``
+        );
     }
 }
