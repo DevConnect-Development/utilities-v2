@@ -211,7 +211,7 @@ export default class extends Command {
 
         // Return Reply
         return await interaction.editReply(
-            `Successfully muted ${selectedUser} ***(${selectedUser.id})***.\nInfraction ID: \`${infractionEntry.id}\``
+            `Successfully muted ${selectedUser} ***(${selectedUser.id})***.\nInfraction ID: \`${infractionEntry.infraction_id}\``
         );
     }
 }
