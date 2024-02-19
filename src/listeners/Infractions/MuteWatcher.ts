@@ -17,7 +17,7 @@ export default class extends Listener {
     }
 
     async run(client: Client) {
-        Cron("*/30 * * * * *", async () => {
+        Cron("*/5 * * * * *", async () => {
             // Variables
             const currentTimestamp = moment().unix();
 
@@ -37,8 +37,11 @@ export default class extends Listener {
                     mute.user_id!
                 );
 
-                const timeoutRole = currentGuild.roles.cache.find(
+                const serverMuteRole = currentGuild.roles.cache.find(
                     (r) => r.name === "Server Mute"
+                );
+                const marketplaceMuteRole = currentGuild.roles.cache.find(
+                    (r) => r.name === "Marketplace Mute"
                 );
                 const muteExpires = Number(mute.mute_expires);
 
@@ -47,14 +50,18 @@ export default class extends Listener {
                     return;
                 }
 
-                // Check if not Timeout Mute
-                if (mute.mute_type !== "Timeout") {
-                    return;
+                // Check if TIMEOUT Mute
+                if (mute.mute_type === "Server") {
+                    if (currentMember && serverMuteRole) {
+                        await currentMember.roles.remove(serverMuteRole);
+                    }
                 }
 
-                // Remove Role
-                if (currentMember && timeoutRole) {
-                    await currentMember.roles.remove(timeoutRole);
+                // Check if MARKETPLACE Mute
+                if (mute.mute_type === "Marketplace") {
+                    if (currentMember && marketplaceMuteRole) {
+                        await currentMember.roles.remove(marketplaceMuteRole);
+                    }
                 }
 
                 // Remove Mute

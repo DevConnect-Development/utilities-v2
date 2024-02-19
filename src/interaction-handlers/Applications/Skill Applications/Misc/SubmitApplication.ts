@@ -69,7 +69,7 @@ export default class extends InteractionHandler {
         const currentApplicationBan = await ActiveMutes.exists({
             guild_id: interaction.guildId,
             user_id: interaction.user.id,
-            mute_type: "Application Mute",
+            mute_type: "Applications",
         });
         if (currentApplicationBan) {
             return await interaction.editReply({
