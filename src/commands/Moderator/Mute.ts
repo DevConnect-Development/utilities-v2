@@ -175,12 +175,14 @@ export default class extends Command {
                 case "Server": {
                     if(serverMuteRole) {
                         await selectedMember.roles.add(serverMuteRole)
+                        break;
                     }
                 }
 
                 case "Marketplace": {
                     if(marketplaceMuteRole) {
                         await selectedMember.roles.add(marketplaceMuteRole)
+                        break;
                     }
                 }
             }
@@ -207,7 +209,7 @@ export default class extends Command {
             timestamp_end: muteFinishesTimestamp,
         });
 
-        // Reply
+        // Return Reply
         return await interaction.editReply(
             `Successfully muted ${selectedUser} ***(${selectedUser.id})***.\nInfraction ID: \`${infractionEntry.id}\``
         );
