@@ -77,7 +77,7 @@ export default class extends Command {
                     );
             },
             {
-                guildIds: [globalConfig.developmentGuild],
+                guildIds: [globalConfig.communityGuild, globalConfig.developmentGuild],
             }
         );
     }
@@ -198,6 +198,26 @@ export default class extends Command {
                 "Selected user already has an active mute."
             );
         }
+
+        // Mute Embed
+        const muteEmbed = new EmbedBuilder()
+            .setTitle("You have received a mute.")
+            .setDescription(
+                [
+                    `You have received a mute for the following reason:`,
+                    `\`\`\``,
+                    `${selectedMuteReason}`,
+                    `\`\`\``,
+                    ``,
+                    `It will expire on <t:${muteFinishesTimestamp}:f>.`,
+                ].join("\n")
+            )
+            .setColor("Red");
+
+        // Send Mute Message
+        await selectedUser.send({
+            embeds: [muteEmbed]
+        }).catch()
 
         // Create DB Entries
         const activeMuteEntry = await ActiveMutes.create({

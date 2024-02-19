@@ -137,7 +137,7 @@ export default class extends Command {
                     embedDescription.push(
                         [
                             `**\`${actionEmojis[infractionType]}\` ${infraction.infraction_type}** - ${punishmentStart}`,
-                            `\`${infraction.infraction_id}\`\n`,
+                            `**\`ID\`:** \`${infraction.infraction_id}\`\n`,
                             punishmentEnd ? `Expires: ${punishmentEnd}` : "",
                             `Reason: **${infraction.infraction_reason}**`,
                         ]
