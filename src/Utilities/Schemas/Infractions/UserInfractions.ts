@@ -14,6 +14,7 @@ let currentSchema = new Schema({
         },
     },
     infraction_type: String,
+    infraction_emoji: String,
 
     infraction_user: String,
     infraction_moderator: String,

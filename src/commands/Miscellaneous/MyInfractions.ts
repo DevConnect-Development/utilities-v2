@@ -19,6 +19,7 @@ import {
 import UserInfractions from "@schemas/Infractions/UserInfractions";
 
 // Action Emojis
+type actionEmojisKey = keyof typeof actionEmojis
 const actionEmojis = {
     Warning: "⚠️",
     Mute: "🔇",
@@ -123,11 +124,7 @@ export default class extends Command {
                 const embedDescription = [];
 
                 for (const infraction of chunk) {
-                    const infractionType = `${infraction.infraction_type}` as
-                        | "Warning"
-                        | "Mute"
-                        | "Ban"
-                        | "Softban";
+                    const infractionType = `${infraction.infraction_emoji}` as actionEmojisKey;
                     const punishmentStart = `<t:${infraction.timestamp_start}:f>`;
                     let punishmentEnd;
 

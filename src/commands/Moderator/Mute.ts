@@ -198,6 +198,7 @@ export default class extends Command {
         });
         const infractionEntry = await UserInfractions.create({
             infraction_type: `${selectedMuteType} Mute`,
+            infraction_emoji: "Mute",
 
             infraction_user: selectedUser.id,
             infraction_moderator: interaction.user.id,
