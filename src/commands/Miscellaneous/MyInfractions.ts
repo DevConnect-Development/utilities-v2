@@ -136,7 +136,7 @@ export default class extends Command {
 
                     embedDescription.push(
                         [
-                            `**\`${actionEmojis[infractionType]}\` ${infractionType}** - ${punishmentStart}`,
+                            `**\`${actionEmojis[infractionType]}\` ${infraction.infraction_type}** - ${punishmentStart}`,
                             `\`${infraction.infraction_id}\`\n`,
                             punishmentEnd ? `Expires: ${punishmentEnd}` : "",
                             `Reason: **${infraction.infraction_reason}**`,
@@ -159,7 +159,7 @@ export default class extends Command {
                         )
                     )
                     .setFooter({
-                        text: `${userInfractionsLength} Total Infractions`,
+                        text: `${userInfractionsLength} Total Infraction${userInfractionsLength === 1 ? "s" : ""}`,
                     });
 
                 // Return Embed
