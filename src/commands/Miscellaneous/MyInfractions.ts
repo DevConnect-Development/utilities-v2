@@ -16,7 +16,7 @@ import {
 } from "discord.js";
 
 // Schemas
-import UserInfractions from "@schemas/Infractions/UserInfractions.js";
+import UserInfractions from "@schemas/Infractions/UserInfractions";
 
 // Action Emojis
 const actionEmojis = {
