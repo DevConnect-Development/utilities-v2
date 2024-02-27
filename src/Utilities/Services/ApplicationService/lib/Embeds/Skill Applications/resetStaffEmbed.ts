@@ -1,5 +1,5 @@
 // Dependencies
-import globalConfig from "@config";
+import VerifiedURLs from "@configs/VerifiedURLs";
 import GetBaseURL from "@modules/Functions/GetBaseURL";
 
 import {
@@ -87,7 +87,7 @@ export default async function (applicationID: String) {
     for (const example of fetchedApplication.provided_work) {
         const baseURL = GetBaseURL(example);
         if (baseURL) {
-            const isVerified = globalConfig.verifiedURLS.includes(baseURL);
+            const isVerified = VerifiedURLs.includes(baseURL);
 
             filteredPastWork.push(
                 `[${baseURL}](${example}) ${!isVerified ? "**[❗]**" : ""}`

@@ -26,7 +26,7 @@ export default async function (applicationID: String) {
 
     // Variables
     const outstandingIssues: Array<String> = [];
-    const filteredPastWork = []
+    const filteredPastWork = [];
     const selectedRole = fetchedApplication.app_role;
 
     // Components
@@ -81,9 +81,9 @@ export default async function (applicationID: String) {
 
     // Sort Past Work
     for (const example of fetchedApplication.provided_work) {
-        const baseURL = GetBaseURL(example)
-        if(baseURL) {
-            filteredPastWork.push(`[${baseURL}](${example})`)
+        const baseURL = GetBaseURL(example);
+        if (baseURL) {
+            filteredPastWork.push(`[${baseURL}](${example})`);
         }
     }
 
@@ -94,15 +94,13 @@ export default async function (applicationID: String) {
             {
                 name: "Author",
                 value: `<@${fetchedApplication.author_id}> (${fetchedApplication.author_id})`,
-                inline: true,
             },
             {
                 name: "Work Examples",
                 value:
-                filteredPastWork.length > 0
+                    filteredPastWork.length > 0
                         ? filteredPastWork.join("\n")
                         : "No Work Provided",
-                inline: true,
             }
         )
         .setFooter({
@@ -114,7 +112,6 @@ export default async function (applicationID: String) {
         mainEmbed.addFields({
             name: "Additional Comment",
             value: fetchedApplication.provided_comment,
-            inline: false,
         });
     }
 

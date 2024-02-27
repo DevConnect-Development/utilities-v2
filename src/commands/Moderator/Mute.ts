@@ -139,7 +139,7 @@ export default class extends Command {
                     !userHasRole(currentMember, "Trial Moderator")
                 ) {
                     return await interaction.editReply(
-                        "Missing Required Permissions."
+                        "You do not have the required permissions to run this command."
                     );
                 }
                 break;
@@ -148,7 +148,7 @@ export default class extends Command {
             case "Marketplace": {
                 if (!userHasRole(currentMember, "Moderator")) {
                     return await interaction.editReply(
-                        "Missing Required Permissions."
+                        "You do not have the required permissions to run this command."
                     );
                 }
                 break;
@@ -157,7 +157,7 @@ export default class extends Command {
             case "Applications": {
                 if (!userHasRole(currentMember, "Application Reader")) {
                     return await interaction.editReply(
-                        "Missing Required Permissions."
+                        "You do not have the required permissions to run this command."
                     );
                 }
                 break;
