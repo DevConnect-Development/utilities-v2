@@ -85,7 +85,7 @@ export default async function (applicationID: String) {
     if (declineReasons.length > 0) {
         mainEmbed.addFields({
             name: "Decline Reasons",
-            value: `\`\`\`${declineReasons.join("\n").toUpperCase()}\`\`\``,
+            value: `\`\`\`\n${declineReasons.join("\n").toUpperCase()}\`\`\``,
         });
     }
 
