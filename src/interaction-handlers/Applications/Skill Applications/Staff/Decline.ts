@@ -84,6 +84,8 @@ export default class extends InteractionHandler {
             });
         }
 
+        console.log(declineReasons)
+
         await selectedMember
             .send(
                 [
